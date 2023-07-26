@@ -21,4 +21,8 @@ public class Applicant {
     private List<ObjectId> appliedOpeningIds;
     private boolean blacklisted;
 
+    private List<Experience> experienceList;
+    private List<Education> educationList;
+    private List<Certificaiton> certificateList;
+
 }

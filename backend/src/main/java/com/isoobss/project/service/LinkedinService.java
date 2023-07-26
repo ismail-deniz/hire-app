@@ -1,5 +1,6 @@
 package com.isoobss.project.service;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -8,8 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.isoobss.project.model.LinkedinProfile;
+import com.isoobss.project.repository.ApplicantRepository;
 import com.isoobss.project.exception.LinkedinException;
+import com.isoobss.project.model.Applicant;
 import com.isoobss.project.model.LinkedinAccessTokenResponse;
+import com.isoobss.project.model.LinkedinEmailResponse;
 
 
 @Service
@@ -26,12 +30,15 @@ public class LinkedinService {
 
     private final RestTemplateBuilder restTemplateBuilder;
 
+    private final ApplicantRepository applicantRepository;
+
     @Autowired
-    public LinkedinService(RestTemplateBuilder restTemplateBuilder) {
+    public LinkedinService(RestTemplateBuilder restTemplateBuilder, ApplicantRepository applicantRepository) {
         this.restTemplateBuilder = restTemplateBuilder;
+        this.applicantRepository = applicantRepository;
     }
 
-    public LinkedinProfile getLinkedinProfile(String authorizationCode) throws LinkedinException {
+    public Applicant getLinkedinProfile(String authorizationCode) throws LinkedinException {
         // Exchange authorization code for access token
         String accessToken = exchangeAuthorizationCodeForAccessToken(authorizationCode);
 
@@ -68,17 +75,37 @@ public class LinkedinService {
         }
     }
 
-    private LinkedinProfile fetchLinkedinProfileData(String accessToken) throws LinkedinException {
+    private Applicant fetchLinkedinProfileData(String accessToken) throws LinkedinException {
         String profileUrl = "https://api.linkedin.com/v2/me";
+        String emailUrl = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
+
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
         
         ResponseEntity<LinkedinProfile> responseEntity = restTemplateBuilder.build().exchange(
             profileUrl, HttpMethod.GET, requestEntity, LinkedinProfile.class);
+        LinkedinProfile lp = responseEntity.getBody();
+            
+        ResponseEntity<LinkedinEmailResponse> emailResponseEntity = new RestTemplate().exchange(
+            emailUrl, HttpMethod.GET, requestEntity, LinkedinEmailResponse.class);
+        LinkedinEmailResponse emailResponse = emailResponseEntity.getBody();
 
+        Applicant applicant = new Applicant();
+        applicant.setFullName(lp.getFirstName() + " " + lp.getLastName());
+        applicant.setEmail(emailResponse.getElements()[0].getHandle().getEmailAddress());
+        
+        Applicant exists = applicantRepository.findByEmail(applicant.getEmail());
+        if (exists != null) {
+            exists.setFullName(applicant.getFullName());
+            applicantRepository.save(exists);
+            applicant = exists;
+        } else {
+            applicantRepository.save(applicant);
+        }
+    
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            return responseEntity.getBody();
+            return applicant;
         } else {
             throw new LinkedinException("Failed to fetch LinkedIn profile data");
         }
