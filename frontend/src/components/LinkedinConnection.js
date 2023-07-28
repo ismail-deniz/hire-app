@@ -1,63 +1,96 @@
-import React, { useState } from 'react';
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Button, TextField, Typography, Paper } from '@mui/material';
 
-// LinkedIn API credentials
 const CLIENT_ID = '77255ae457gw43';
-const CLIENT_SECRET = 'ehBdny0qzW1NMYmc';
-const REDIRECT_URI = 'http://localhost:3000';
+const REDIRECT_URI = 'http%3A%2F%2Flocalhost%3A3000';
 
-export default function LinkedinConnection() {
-  const [userProfile, setUserProfile] = useState(null);
+const LinkedinConnection = () => {
+  
+  const [profileData, setProfileData] = useState(null);
+  const [fetchedData, setFetchedData] = useState(false);
+  const [typedUrl, setTypedUrl] = useState('');
+  const [additionalDataFetched, setAdditionalDataFetched] = useState(false);
+  
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const authorizationCode = params.get('code');
+  
+    if (authorizationCode && !fetchedData) {
+      fetchProfileData(encodeURIComponent(authorizationCode));
+      setFetchedData(true);
+      window.history.pushState({}, '', '/'); // Replace '/' with the URL you want to show after data is fetched
+    }
+  }, [fetchedData]);
+  
+  useEffect(() => {
+    // Check if the user email is available in localStorage
+    const userUrlId = localStorage.getItem('urlId');
+    if (userUrlId && !profileData) {
+      console.log('User is already logged in with email:', localStorage.getItem("userEmail"));
+      axios.get(`http://localhost:8080/api/profile/${userUrlId}`)
+        .then((response) => {
+          setProfileData(response.data);
+          setAdditionalDataFetched(true);
+        })
+    }
+  }, [profileData]);
 
   const handleLinkedInLogin = () => {
-    // Open LinkedIn authentication window
-    window.open(
-      `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=STATE&scope=r_liteprofile`,
-      '_self'
-    );
+    const authorizationUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=123456789&scope=r_liteprofile%20r_emailaddress`;
+    window.location.href = authorizationUrl;
   };
 
-  const fetchUserProfile = (authorizationCode) => {
-    axios.get('http://localhost:8080/api/fetchUserProfile', {
-        params: {code: authorizationCode}
-    }).then((response) => {
-        // Handle the response data
-        console.log(response.data);
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error('Error fetching user profile:', error);
-      });
-  };
-
-  const handleRedirect = () => {
-    // Get the authorization code from the query parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const authorizationCode = urlParams.get('code');
-
-    if (authorizationCode) {
-      // Call the function to fetch user profile using the authorization code
-      fetchUserProfile(authorizationCode);
+  const fetchProfileData = async (authorizationCode) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/linkedin/profile?code=${authorizationCode}`);
+      setProfileData(response.data);
+      localStorage.setItem("userEmail", response.data.email);
+    } catch (error) {
+      console.error('Error fetching LinkedIn profile:', error);
     }
   };
 
-  // Check if the page is redirected from LinkedIn authentication
-  React.useEffect(() => {
-    handleRedirect();
-  }, []);
+  const handleSendRequest = async () => {
+    console.log(profileData.email);
+    try {
+      const response = await axios.put(`http://localhost:8080/api/linkedin/profile`, {
+        email: profileData.email,
+        profileUrl: typedUrl
+      });
+      setProfileData(response.data)
+      setAdditionalDataFetched(true);
+      localStorage.setItem("urlId", response.data.urlId);
+      window.location.href = `/profile/${response.data.urlId}`;
+    } catch (error) {
+      console.error('Error sending request:', error);
+    }
+  };
+
 
   return (
-    <div>
-      {userProfile ? (
+    <div style={{ maxWidth: 500, margin: 'auto'}}>
+      {profileData ? (
         <div>
-          <h1>Welcome, {userProfile.firstName}!</h1>
-          <p>Email: {userProfile.emailAddress}</p>
-          <p>ACode: {userProfile.authorizationCode}</p>
-          {/* Render other profile information as needed */}
+          <Typography variant="h4" gutterBottom>Welcome, {profileData.fullName}!</Typography>
+            <Paper elevation={3} style={{ padding: 20, marginBottom: 20 }}>
+              <TextField
+                label="LinkedIn Profile URL"
+                variant="outlined"
+                fullWidth
+                value={typedUrl}
+                onChange={(e) => setTypedUrl(e.target.value)}
+              />
+              <Button variant="contained" color="primary" onClick={handleSendRequest} style={{ marginTop: 10 }}>
+                Send Request
+              </Button>
+            </Paper>
         </div>
       ) : (
-        <button onClick={handleLinkedInLogin}>Log in with LinkedIn</button>
+        <Button variant="contained" color="primary" onClick={handleLinkedInLogin}>Login with LinkedIn</Button>
       )}
     </div>
   );
 };
+
+export default LinkedinConnection;

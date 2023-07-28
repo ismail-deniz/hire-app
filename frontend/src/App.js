@@ -1,11 +1,27 @@
-import './App.css';
-import LinkedinConnection  from './components/LinkedinConnection';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Stack, Box, Container } from '@mui/material';
+import './style/styles.css';
+import LinkedinConnection from './components/LinkedinConnection';
+import ProfilePage from './pages/ProfilePage';
+import Navbar from './components/Navbar';
+import JobOpeningsPage from './pages/JobOpeningsPage';
 
 function App() {
   return (
-    <div className="App">
-      <LinkedinConnection></LinkedinConnection>
-    </div>
+    <Router>
+      <Box sx={{ paddingTop: '64px' }}> {/* Add margin to the top for the Navbar */}
+        <Container maxWidth="md">
+          <Stack spacing={3}>
+            <Navbar justifyContent="top" />
+            <Routes>
+              <Route path="/" element={<LinkedinConnection />} />
+              <Route path="/profile/:urlId" element={<ProfilePage />} />
+              <Route path="/jobs" element={<JobOpeningsPage />} />
+            </Routes>
+          </Stack>
+        </Container>
+      </Box>
+    </Router>
   );
 }
 

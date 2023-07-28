@@ -18,7 +18,15 @@ public class Applicant {
     private String fullName;
     private String password;
 
+    private String linkedinUrl;
+    private String urlId;
+    private String about;
+
     private List<ObjectId> appliedOpeningIds;
     private boolean blacklisted;
+
+    private List<Experience> experienceList;
+    private List<Education> educationList;
+    private List<Certificaiton> certificateList;
 
 }
