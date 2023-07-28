@@ -1,44 +1,47 @@
 import React from 'react';
-import Card from '@mui/material/Card';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
+import { Avatar, Typography, Button, Paper, Box } from '@mui/material';
 
-const JobOpeningCard = ({ logoUrl, title, status, onClick }) => {
+const JobOpeningCard = ({ selectedJob, handleApply }) => {
   return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea onClick={onClick}>
-        <CardMedia
-          component="img"
-          height="140"
-          image={logoUrl}
-          alt="Company Logo"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            {title}
-          </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography variant="subtitle1" color="text.secondary">
-              {status === 'active' ? 'Active' : 'Inactive'}
-            </Typography>
-            <Avatar sx={{ bgcolor: status === 'active' ? 'success.main' : 'error.main' }}>
-              {status === 'active' ? 'A' : 'I'}
-            </Avatar>
-          </Box>
-        </CardContent>
-      </CardActionArea>
-      <CardActions>
-        <Button size="small" color="primary">
-          Apply/View Applicants
-        </Button>
-      </CardActions>
-    </Card>
+    <Paper>
+      <Typography variant="h4" gutterBottom>
+        {selectedJob.title}
+      </Typography>
+      <Typography variant="h6" gutterBottom>
+        {selectedJob.explanation}
+      </Typography>
+      {selectedJob.qualifications && selectedJob.qualifications.length > 0 && (
+        <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap' }}>
+          {selectedJob.qualifications.map((qualification, index) => (
+            <Box
+              key={index}
+              sx={{
+                border: '1px solid #ccc',
+                borderRadius: 4,
+                padding: '4px 8px',
+                marginRight: 8,
+                marginBottom: 2,
+              }}
+            >
+              <Typography variant="body2">{qualification}</Typography>
+            </Box>
+          ))}
+        </Box>
+      )}
+      <Avatar sx={{ bgcolor: selectedJob.isActive ? 'success.main' : 'error.main' }}>
+        {selectedJob.isActive ? 'A' : 'I'}
+      </Avatar>
+      <Button
+        onClick={() => handleApply(selectedJob.id)}
+        variant="contained"
+        color="primary"
+        sx={{
+          mt: 2,
+        }}
+      >
+        Apply
+      </Button>
+    </Paper>
   );
 };
 

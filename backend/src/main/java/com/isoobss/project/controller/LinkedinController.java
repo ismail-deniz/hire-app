@@ -1,8 +1,8 @@
 package com.isoobss.project.controller;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.isoobss.project.exception.LinkedinException;
@@ -12,7 +12,7 @@ import com.isoobss.project.request.ScrapeLinkedinProfileRequest;
 import com.isoobss.project.service.LinkedinService;
 import com.isoobss.project.service.ScrapeService;
 
-@RestController
+@Controller
 @RequestMapping("/api/linkedin")
 @CrossOrigin(origins = "http://localhost:3000")
 public class LinkedinController {
@@ -37,10 +37,10 @@ public class LinkedinController {
         }
     }
 
-    @PutMapping("/profile/{urlAppendix}") 
-    public ResponseEntity<?> scrapeLinkedinProfile(@PathVariable String urlAppendix, @RequestBody ScrapeLinkedinProfileRequest req) {
+    @PutMapping("/profile") 
+    public ResponseEntity<?> scrapeLinkedinProfile(@RequestBody ScrapeLinkedinProfileRequest req) {
         try {
-            Applicant profile = scrapeService.scrapeProfile("https://www.linkedin.com/in/" + urlAppendix, req.getEmail());
+            Applicant profile = scrapeService.scrapeProfile(req.getProfileUrl(), req.getEmail());
             return ResponseEntity.ok(profile);
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body("Failed to update profile: " + e.getMessage());

@@ -1,26 +1,27 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Stack, Box, Container } from '@mui/material';
-import './App.css';
+import './style/styles.css';
 import LinkedinConnection from './components/LinkedinConnection';
-import JobOpenings from './components/JobOpenings';
+import ProfilePage from './pages/ProfilePage';
+import Navbar from './components/Navbar';
+import JobOpeningsPage from './pages/JobOpeningsPage';
 
 function App() {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh', // Use minHeight instead of height to allow the content to grow
-        backgroundColor: '#f5f5f5', // Add a background color to the container
-      }}
-    >
-      <Container maxWidth="md">
-        <Stack spacing={3}>
-          <LinkedinConnection />
-          <JobOpenings />
-        </Stack>
-      </Container>
-    </Box>
+    <Router>
+      <Box sx={{ paddingTop: '64px' }}> {/* Add margin to the top for the Navbar */}
+        <Container maxWidth="md">
+          <Stack spacing={3}>
+            <Navbar justifyContent="top" />
+            <Routes>
+              <Route path="/" element={<LinkedinConnection />} />
+              <Route path="/profile/:urlId" element={<ProfilePage />} />
+              <Route path="/jobs" element={<JobOpeningsPage />} />
+            </Routes>
+          </Stack>
+        </Container>
+      </Box>
+    </Router>
   );
 }
 

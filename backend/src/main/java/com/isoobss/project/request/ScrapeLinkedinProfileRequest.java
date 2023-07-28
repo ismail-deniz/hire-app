@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class ScrapeLinkedinProfileRequest {
     private String email;
+    private String profileUrl;
 }

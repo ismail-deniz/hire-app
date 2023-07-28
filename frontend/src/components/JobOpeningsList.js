@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+    Avatar,
     Card,
     CardContent,
     CardActions,
@@ -11,15 +12,11 @@ import {
     Paper,
     CardActionArea
 } from '@mui/material';
+import JobOpeningCard from './JobOpeningCard';
 
-const JobOpeningsList = ({jobData}) => {
+const JobOpeningsList = ({jobData, handleApply}) => {
     const [selectedJob,
         setSelectedJob] = useState(null);
-
-    const handleApply = (jobId) => {
-        // Implement the logic to handle the apply action based on the jobId
-        console.log(`Apply for Job ID: ${jobId}`);
-    };
 
     const onClick = (jobId) => {
         // Implement the logic to handle the click action based on the jobId
@@ -86,23 +83,7 @@ const JobOpeningsList = ({jobData}) => {
                     p: 4
                 }}>
                     {selectedJob && (
-                        <Paper>
-                            <Typography variant="h4" gutterBottom>
-                                {selectedJob.title}
-                            </Typography>
-                            <Typography variant="subtitle1">{selectedJob.status === 'active'
-                                    ? 'Active'
-                                    : 'Inactive'}</Typography>
-                            <Button
-                                onClick={() => handleApply(selectedJob.id)}
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                mt: 2
-                            }}>
-                                Apply
-                            </Button>
-                        </Paper>
+                        <JobOpeningCard selectedJob={selectedJob} handleApply={handleApply} />
                     )}
                 </Box>
             </Modal>

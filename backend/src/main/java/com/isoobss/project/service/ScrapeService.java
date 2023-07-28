@@ -39,6 +39,10 @@ public class ScrapeService {
             throw new UserNotFoundException("email: " + email + " cannot be found!");
         }
 
+        // Set the urlid
+        applicant.setLinkedinUrl(profileUrl);
+        applicant.setUrlId(profileUrl.split("/")[4]);
+
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 
         // Launch ChromeDriver in incognito mode
@@ -51,6 +55,23 @@ public class ScrapeService {
         //String userProfileUrl = "https://www.linkedin.com/in/aydinmehmetemin/";
         driver.get(profileUrl);
 
+        // About (summary) Section
+        WebElement summary = null;
+         try {
+            summary = driver.findElement(By.xpath("//*[@id=\"main-content\"]/section[1]/div/section/section[1]/div/div[2]/div[1]/h2"));
+        } catch (NoSuchElementException e) {
+            System.out.println("can't find headline");
+        }
+        try {
+            summary = driver.findElement(By.xpath("//*[@id=\"main-content\"]/section[1]/div/section/section[2]/div/p"));
+        } catch (NoSuchElementException e) {
+            System.out.println("can't find summary");
+        }
+        if (summary != null) {
+            applicant.setAbout(summary.getText());
+        }
+
+        // Experiences Section
         List<WebElement> liExpElements = null;
         try {
             liExpElements = driver.findElements(By.cssSelector("li.profile-section-card.experience-item"));
@@ -67,7 +88,7 @@ public class ScrapeService {
             // Handle if the title element is not found (Optional: You can log or do other actions here)
         }
 
-        // Find all <li> elements with class "profile-section-card" and "education__list-item"
+        // Education Section
         List<WebElement> liEduElements = null;
         try {
             liEduElements = driver.findElements(By.cssSelector("li.profile-section-card.education__list-item"));
@@ -76,6 +97,7 @@ public class ScrapeService {
             // handle
         }
 
+        // Certifications Section
         WebElement ulCertificationListElement = null;
         List<WebElement> liCertificationElements = null;
         try {

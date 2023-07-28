@@ -10,5 +10,7 @@ import com.isoobss.project.model.Applicant;
 public interface ApplicantRepository extends MongoRepository<Applicant, ObjectId> {
 
     Applicant findByEmail(String email);
+
+    Applicant findByUrlId(String urlId);
     
 }
