@@ -1,0 +1,44 @@
+dn: dc=springframework,dc=org
+objectclass: top
+objectclass: domain
+objectclass: extensibleObject
+dc: springframework
+
+dn: ou=groups,dc=springframework,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: groups
+
+dn: ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: people
+
+dn: uid=alice,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Alice Smith
+sn: Smith
+uid: alice
+userPassword: $2a$10$ilTRlrlumnfWaNTpGz8.RuyLkIk7J8yVt0GAmEM2qzxTOSuJPkA8C
+employeeType: HR
+
+dn: uid=bob,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Bob Johnson
+sn: Johnson
+uid: bob
+userPassword: $2a$10$XdwrA92T1Si5AKkw5IS1vuqBIWZ7mMgqFnijINBT4Fjfkkx34p7kK
+employeeType: HR
+
+dn: cn=HR,ou=groups,dc=springframework,dc=org
+objectclass: top
+objectclass: groupOfNames
+cn: HR
+member: uid=bob,ou=people,dc=springframework,dc=org
+member: uid=alice,ou=people,dc=springframework,dc=org

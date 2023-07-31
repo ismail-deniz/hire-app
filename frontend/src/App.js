@@ -5,6 +5,7 @@ import LinkedinConnection from './components/LinkedinConnection';
 import ProfilePage from './pages/ProfilePage';
 import Navbar from './components/Navbar';
 import JobOpeningsPage from './pages/JobOpeningsPage';
+import LoginPage from './pages/LoginPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Navbar justifyContent="top" />
             <Routes>
               <Route path="/" element={<LinkedinConnection />} />
+              <Route path="/login" element={<LoginPage />} />
               <Route path="/profile/:urlId" element={<ProfilePage />} />
               <Route path="/jobs" element={<JobOpeningsPage />} />
             </Routes>
