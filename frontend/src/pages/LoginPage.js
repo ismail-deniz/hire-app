@@ -53,6 +53,19 @@ export default function LoginPage() {
                 // Handle errors here
                 console.error(error);
             });
+        axios.get('http://localhost:8080/api/hr/', {
+              headers: {
+                  Authorization: `Bearer ${token}`
+              }
+              })
+              .then(response => {
+                  // Handle the response here
+                  console.log(response.data);
+              })
+              .catch(error => {
+                  // Handle errors here
+                  console.error(error);
+              });
     }).catch((error) => {
         console.log(error);
     })

@@ -23,6 +23,7 @@ cn: Alice Smith
 sn: Smith
 uid: alice
 userPassword: $2a$10$ilTRlrlumnfWaNTpGz8.RuyLkIk7J8yVt0GAmEM2qzxTOSuJPkA8C
+employeeType: HR
 
 dn: uid=bob,ou=people,dc=springframework,dc=org
 objectclass: top
@@ -33,6 +34,7 @@ cn: Bob Johnson
 sn: Johnson
 uid: bob
 userPassword: $2a$10$XdwrA92T1Si5AKkw5IS1vuqBIWZ7mMgqFnijINBT4Fjfkkx34p7kK
+employeeType: HR
 
 dn: cn=HR,ou=groups,dc=springframework,dc=org
 objectclass: top

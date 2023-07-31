@@ -27,7 +27,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         String token = jwtUtil.resolveToken(request);
-        if (token != null && jwtUtil.validateToken(token)) {
+        if (token != null && jwtUtil.validateToken(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
             String username = jwtUtil.extractUsername(token);
             System.out.println(username);
             UserDetails userDetails = User.builder().username(username).password("userPassword")
@@ -38,6 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             System.out.println(authentication.toString());
         }
+        //System.out.println(SecurityContextHolder.getContext().getAuthentication().toString());
         System.out.println("filtre çikiyor");
         chain.doFilter(request, response);
     }

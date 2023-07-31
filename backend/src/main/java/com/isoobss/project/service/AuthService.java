@@ -16,7 +16,7 @@ public class AuthService {
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
     
-    @Autowired
+    //@Autowired
     public AuthService(AuthenticationManager authManager, JwtUtil jwtUtil) {
         this.authManager = authManager;
         this.jwtUtil = jwtUtil;

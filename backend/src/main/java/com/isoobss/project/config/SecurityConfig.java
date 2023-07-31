@@ -36,13 +36,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers("/api/hr/**", "/api/hr").hasRole("HR") 
             .requestMatchers("/api/**").permitAll() 
-            .requestMatchers("/api/hr/**").hasAuthority("ROLE_HR") 
-                .anyRequest().authenticated()
+                .anyRequest().anonymous()
             );
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        System.out.println("helo");
         return http.build();
     }
 
@@ -52,6 +53,7 @@ public class SecurityConfig {
             .ldapAuthentication()
             .userDnPatterns("uid={0},ou=people")
             .groupSearchBase("ou=groups")
+            .groupRoleAttribute("employeeType")
             .contextSource()
                 .url("ldap://localhost:8389/dc=springframework,dc=org")
                 .and()
@@ -77,18 +79,4 @@ public class SecurityConfig {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
 		return authConfig.getAuthenticationManager();
 	}
-
-    // Custom Authentication Success Handler to issue JWT token
-    private AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new SimpleUrlAuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, org.springframework.security.core.Authentication authentication) throws IOException, ServletException {
-                String username = authentication.getName();
-                String token = jwtUtil.generateToken(username);
-
-                response.setContentType("application/json");
-                response.getWriter().write("{\"token\":\"" + token + "\"}");
-            }
-        };
-    }
 }
