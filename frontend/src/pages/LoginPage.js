@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import axios from 'axios'
+import LinkedinConnection from '../components/LinkedinConnection';
 
 function Copyright(props) {
   return (
@@ -29,31 +30,20 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function LoginPage() {
+export default function LoginPage({setChange}) {
     const handleSubmit = (event) => {
     event.preventDefault();  
     const data = new FormData(event.currentTarget);
     console.log({
-        userName: data.get('email'),
+        userName: data.get('username'),
         password: data.get('password'),
       });
     axios.get(`http://localhost:8080/api/login?userName=${data.get('username')}&password=${data.get('password')}`,).then((response) => {
-        console.log(response);
-        const token = response.data;
-        axios.get('http://localhost:8080/api/profile/ismail-deniz', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-            })
-            .then(response => {
-                // Handle the response here
-                console.log(response.data);
-            })
-            .catch(error => {
-                // Handle errors here
-                console.error(error);
-            });
-        axios.get('http://localhost:8080/api/hr/', {
+      const token = response.data;
+        console.log(token);
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("role", "HR");
+        axios.get(`http://localhost:8080/api/hr/${data.get('username')}`, {
               headers: {
                   Authorization: `Bearer ${token}`
               }
@@ -61,6 +51,10 @@ export default function LoginPage() {
               .then(response => {
                   // Handle the response here
                   console.log(response.data);
+                  sessionStorage.setItem("hrId", response.data);
+                  setChange(true);
+                  setChange(false);
+                  //window.location.href = `http://localhost:3000/jobs`
               })
               .catch(error => {
                   // Handle errors here
@@ -111,7 +105,7 @@ export default function LoginPage() {
                 required
                 fullWidth
                 id="username"
-                label="User Name"
+                label="Username"
                 name="username"
                 autoComplete="username"
                 autoFocus
@@ -134,8 +128,9 @@ export default function LoginPage() {
               >
                 Sign In
               </Button>
-              <Copyright sx={{ mt: 5 }} />
             </Box>
+              <LinkedinConnection />
+              <Copyright sx={{ mt: 5 }} />
           </Box>
         </Grid>
       </Grid>

@@ -22,13 +22,38 @@ const ProfilePage = () => {
   const { urlId } = useParams(); // This will get the user's URL ID from the URL parameter
 
   const [userData, setUserData] = useState(null);
+  const [userDataFetched, setUserDataFetched] = useState(false);
+  const [dataIncomplete, setDataIncomplete] = useState(false);
+  const [typedUrl, setTypedUrl] = useState('');
 
   useEffect(() => {
     // Fetch the profile data for the specified user using the urlId
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/profile/${urlId}`);
-        setUserData(response.data);
+        if (urlId) {
+          axios.get(`http://localhost:8080/api/profile/${urlId}`)
+          .then((response) => {
+            setUserData(response.data);
+            setUserDataFetched(true);
+          })
+        } else {
+          if (sessionStorage.getItem("userEmail")) {
+          axios.get(`http://localhost:8080/api/profile/mail/${encodeURIComponent(sessionStorage.getItem("uerEmail"))}`)
+          .then((response) => {
+            setUserData(response.data);
+            try {
+              if (userData.urlId)
+                setUserDataFetched(true);
+              else
+                setDataIncomplete(true);
+            } catch (error) {
+              setUserDataFetched(false);
+            }
+          })
+          } else {
+            window.location.href = "http://localhost:3000/login"
+          }
+        }
       } catch (error) {
         console.error('Error fetching user profile:', error);
       }
@@ -45,7 +70,22 @@ const ProfilePage = () => {
         profileUrl: userData.linkedinUrl
       });
       setUserData(response.data)
-      localStorage.setItem("urlId", response.data.urlId);
+      sessionStorage.setItem("urlId", response.data.urlId);
+      window.location.href = `/profile/${response.data.urlId}`;
+    } catch (error) {
+      console.error('Error sending request:', error);
+    }
+  };
+
+  const handleSendRequest = async () => {
+    console.log(sessionStorage.getItem("userEmail"));
+    try {
+      const response = await axios.put(`http://localhost:8080/api/linkedin/profile`, {
+        email: sessionStorage.getItem("userEmail"),
+        profileUrl: typedUrl
+      });
+      setUserData(response.data)
+      sessionStorage.setItem("urlId", response.data.urlId);
       window.location.href = `/profile/${response.data.urlId}`;
     } catch (error) {
       console.error('Error sending request:', error);
@@ -54,7 +94,7 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-container">
-      {userData ? (
+      {userDataFetched ? (
         <div>
           <Typography variant="h4" className='profile-title' gutterBottom>
             Welcome, {userData.fullName}!
@@ -161,7 +201,27 @@ const ProfilePage = () => {
         </div>
       ) : (
         // Display a loading or error message if userData is null
-        <Typography variant="h5">Loading...</Typography>
+        <div>
+          {dataIncomplete ? (
+            <div>
+            <Typography variant="h5" gutterBottom>Welcome!</Typography>
+              <Paper elevation={3} style={{ padding: 20, marginBottom: 20 }}>
+                <TextField
+                  label="LinkedIn Profile URL"
+                  variant="outlined"
+                  fullWidth
+                  value={typedUrl}
+                  onChange={(e) => setTypedUrl(e.target.value)}
+                />
+                <Button variant="contained" color="primary" onClick={handleSendRequest} style={{ marginTop: 10 }}>
+                  Send Request
+                </Button>
+              </Paper>
+            </div>
+          ) : (
+            <Typography variant="h5">Loading...</Typography>
+          )}
+        </div>
       )}
     </div>
   );

@@ -1,16 +1,14 @@
 package com.isoobss.project.repository;
 
-import java.util.List;
-
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import com.isoobss.project.model.Opening;
+import com.isoobss.project.model.Hr;
 
 @Repository
-public interface OpeningRepository extends MongoRepository<Opening, ObjectId> {
+public interface HrRepository extends MongoRepository<Hr, ObjectId> {
 
-    List<Opening> findByHrId(ObjectId hrId);
+    Hr findByUsername(String username);
     
 }

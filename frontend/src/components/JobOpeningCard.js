@@ -1,7 +1,8 @@
 import React from 'react';
 import { Avatar, Typography, Button, Paper, Box } from '@mui/material';
+import ApplyButton from './ApplyButton';
 
-const JobOpeningCard = ({ selectedJob, handleApply }) => {
+const JobOpeningCard = ({ selectedJob }) => {
   return (
     <Paper>
       <Typography variant="h4" gutterBottom>
@@ -31,16 +32,7 @@ const JobOpeningCard = ({ selectedJob, handleApply }) => {
       <Avatar sx={{ bgcolor: selectedJob.isActive ? 'success.main' : 'error.main' }}>
         {selectedJob.isActive ? 'A' : 'I'}
       </Avatar>
-      <Button
-        onClick={() => handleApply(selectedJob.id)}
-        variant="contained"
-        color="primary"
-        sx={{
-          mt: 2,
-        }}
-      >
-        Apply
-      </Button>
+      <ApplyButton job={selectedJob} />
     </Paper>
   );
 };

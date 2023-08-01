@@ -15,7 +15,7 @@ public class Opening {
     @Id
     private ObjectId id;
 
-    private ObjectId recruiterId;
+    private ObjectId hrId;
 
     private String title;
     private String explanation;

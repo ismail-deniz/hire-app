@@ -22,10 +22,11 @@ const CreateOpening = ({ onClose, onSave }) => {
     const newOpening = {
       title: title,
       explanation: explanation,
-      isActive: isActive,
+      active: isActive,
       activeDate: isActive ? new Date(activeDate) : null,
       deactiveDate: isActive ? null : new Date(deactiveDate),
       qualifications: qualifications.map((qual) => qual.value),
+      hrId: sessionStorage.getItem("hrId"),
     };
 
     // Call the onSave function and pass the new opening object

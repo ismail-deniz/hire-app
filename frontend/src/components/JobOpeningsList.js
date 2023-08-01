@@ -13,8 +13,10 @@ import {
     CardActionArea
 } from '@mui/material';
 import JobOpeningCard from './JobOpeningCard';
+import ApplyButton from './ApplyButton';
+import DeleteButton from './DeleteButton';
 
-const JobOpeningsList = ({jobData, handleApply}) => {
+const JobOpeningsList = ({jobData, handleDeleteSuccess}) => {
     const [selectedJob,
         setSelectedJob] = useState(null);
 
@@ -55,16 +57,15 @@ const JobOpeningsList = ({jobData, handleApply}) => {
                                 <Typography variant="h6" gutterBottom>
                                     {job.title}
                                 </Typography>
-                                <Typography variant="subtitle1">{job.status === 'active'
+                                <Typography variant="subtitle1">{job.active
                                         ? 'Active'
                                         : 'Inactive'}</Typography>
                             </CardContent>
                         </Stack>
                     </CardActionArea>
                     <CardActions>
-                        <Button onClick={() => handleApply(job.id)} variant="contained" color="primary">
-                            Apply
-                        </Button>
+                        <ApplyButton job={job}/>
+                        <DeleteButton job={job} handleDeleteSuccess={handleDeleteSuccess}/>
                     </CardActions>
                 </Card>
             ))}
@@ -83,7 +84,7 @@ const JobOpeningsList = ({jobData, handleApply}) => {
                     p: 4
                 }}>
                     {selectedJob && (
-                        <JobOpeningCard selectedJob={selectedJob} handleApply={handleApply} />
+                        <JobOpeningCard selectedJob={selectedJob} />
                     )}
                 </Box>
             </Modal>

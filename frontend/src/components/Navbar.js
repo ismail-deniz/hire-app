@@ -1,20 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 
-const Navbar = () => {
+const Navbar = ({change}) => {
+  const roleFromSessionStorage = sessionStorage.getItem("role");
+  const [role, setRole] = useState(roleFromSessionStorage || "");
+
+  useEffect(() => {
+    // update role when sessionStorage changes
+    setRole(sessionStorage.getItem("role"));
+   }, [change]);
+   
   return (
     <AppBar position="fixed">
       <Toolbar>
         <Typography variant="h6" component={Link} to="/" style={{ textDecoration: 'none', color: 'white', flexGrow: 1, }}>
           OBSS Hire App
         </Typography>
-        <Button component={Link} to={`/profile/${localStorage.getItem("urlId")}`} color="inherit" style={{ textDecoration: 'none' }}>
+        <Button component={Link} to={`/profile/${sessionStorage.getItem("urlId")}`} color="inherit" style={{ textDecoration: 'none' }}>
           Profile
         </Button>
         <Button component={Link} to="/jobs" color="inherit" style={{ textDecoration: 'none' }}>
           Jobs
         </Button>
+        {role === "HR" && 
+        <Button component={Link} to="/myopenings" color="inherit" style={{ textDecoration: 'none' }}>
+        My Openings
+        </Button>
+        }
         <Button component={Link} to="/contact" color="inherit" style={{ textDecoration: 'none' }}>
           Contact
         </Button>
