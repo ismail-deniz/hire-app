@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Card,
     CardContent,
@@ -13,8 +13,10 @@ import {
 } from '@mui/material';
 
 import JobOpeningCard from "./JobOpeningCard.js"
+import ApplyButton from "./ApplyButton.js"
+import DeleteButton from "./DeleteButton.js"
 
-const JobOpeningsGrid = ({jobData, handleApply}) => {
+const JobOpeningsGrid = ({jobData, handleDeleteSuccess}) => {
     const [selectedJob,
         setSelectedJob] = useState(null);
 
@@ -44,15 +46,14 @@ const JobOpeningsGrid = ({jobData, handleApply}) => {
                                     marginBottom: '1rem'
                                 }}/>
                                 <Typography variant="h6">{job.title}</Typography>
-                                <Typography variant="subtitle1">{job.status === 'active'
+                                <Typography variant="subtitle1">{job.active 
                                         ? 'Active'
                                         : 'Inactive'}</Typography>
                             </CardContent>
                         </CardActionArea>
                         <CardActions>
-                            <Button onClick={() => handleApply(job.id)} variant="contained" color="primary">
-                                Apply
-                            </Button>
+                            <ApplyButton job={job} />
+                            <DeleteButton job={job} handleDeleteSuccess={handleDeleteSuccess} />
                         </CardActions>
                     </Card>
                 </Grid>
@@ -72,7 +73,7 @@ const JobOpeningsGrid = ({jobData, handleApply}) => {
                     p: 4
                 }}>
                     {selectedJob && (
-                        <JobOpeningCard selectedJob={selectedJob} handleApply={handleApply} />
+                        <JobOpeningCard selectedJob={selectedJob} />
                     )}
                 </Box>
             </Modal>

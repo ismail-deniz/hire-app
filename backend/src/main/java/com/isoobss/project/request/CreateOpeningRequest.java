@@ -9,8 +9,9 @@ import lombok.Data;
 public class CreateOpeningRequest {
     private String title;
     private String explanation;
-    private boolean isActive;
+    private boolean active;
     private Date activeDate;
     private Date deactiveDate;
-    private List<String> qualifications; 
+    private List<String> qualifications;
+    private String hrId; 
 }
