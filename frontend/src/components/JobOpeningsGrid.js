@@ -15,8 +15,9 @@ import {
 import JobOpeningCard from "./JobOpeningCard.js"
 import ApplyButton from "./ApplyButton.js"
 import DeleteButton from "./DeleteButton.js"
+import EditButton from "./EditButton.js"
 
-const JobOpeningsGrid = ({jobData, handleDeleteSuccess}) => {
+const JobOpeningsGrid = ({jobData, handleDeleteSuccess, setChange}) => {
     const [selectedJob,
         setSelectedJob] = useState(null);
 
@@ -54,6 +55,7 @@ const JobOpeningsGrid = ({jobData, handleDeleteSuccess}) => {
                         <CardActions>
                             <ApplyButton job={job} />
                             <DeleteButton job={job} handleDeleteSuccess={handleDeleteSuccess} />
+                            <EditButton job={job} setChange={setChange} / >
                         </CardActions>
                     </Card>
                 </Grid>

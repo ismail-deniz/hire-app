@@ -13,7 +13,7 @@ const ApplyButton = ({job}) => {
     return (
         <div>
         {
-            sessionStorage.getItem("role") === "APPLICANT" && job.isActive &&
+            sessionStorage.getItem("role") === "APPLICANT" && job.active &&
             <Button onClick={() => handleApply(job.id)} variant="contained" color="primary">
                 Apply
             </Button>

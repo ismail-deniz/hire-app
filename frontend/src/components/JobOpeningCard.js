@@ -29,8 +29,8 @@ const JobOpeningCard = ({ selectedJob }) => {
           ))}
         </Box>
       )}
-      <Avatar sx={{ bgcolor: selectedJob.isActive ? 'success.main' : 'error.main' }}>
-        {selectedJob.isActive ? 'A' : 'I'}
+      <Avatar sx={{ bgcolor: selectedJob.active ? 'success.main' : 'error.main' }}>
+        {selectedJob.active ? 'A' : 'I'}
       </Avatar>
       <ApplyButton job={selectedJob} />
     </Paper>

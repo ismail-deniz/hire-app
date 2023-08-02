@@ -15,8 +15,9 @@ import {
 import JobOpeningCard from './JobOpeningCard';
 import ApplyButton from './ApplyButton';
 import DeleteButton from './DeleteButton';
+import EditButton from './EditButton';
 
-const JobOpeningsList = ({jobData, handleDeleteSuccess}) => {
+const JobOpeningsList = ({jobData, handleDeleteSuccess, setChange}) => {
     const [selectedJob,
         setSelectedJob] = useState(null);
 
@@ -66,6 +67,7 @@ const JobOpeningsList = ({jobData, handleDeleteSuccess}) => {
                     <CardActions>
                         <ApplyButton job={job}/>
                         <DeleteButton job={job} handleDeleteSuccess={handleDeleteSuccess}/>
+                        <EditButton> job={job} setChangehange={setChange}</EditButton>
                     </CardActions>
                 </Card>
             ))}

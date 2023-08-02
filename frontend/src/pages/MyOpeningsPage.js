@@ -8,6 +8,7 @@ import axios from 'axios';
 
 const MyOpeningsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [change, setChange] = useState(0);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -17,14 +18,16 @@ const MyOpeningsPage = () => {
     setIsModalOpen(false);
   };
 
-  const handleSaveOpening = async (newOpening) => {
+  const handleSaveOpening = (newOpening) => {
     try {
         console.log("Sent Opening:", newOpening);
-        const response = await axios.post(`http://localhost:8080/api/hr/newOpening`, newOpening, {
+        axios.post(`http://localhost:8080/api/hr/newOpening`, newOpening, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`
-                }});
-        console.log('New Opening:', response.data);
+                }}).then((response) => {
+                    setChange(change + 1);
+                    console.log('New Opening:', response.data);
+                })
       } catch (error) {
         console.error('Error sending request:', error);
       }
@@ -44,7 +47,7 @@ const MyOpeningsPage = () => {
       >
         <CreateOpening onClose={handleCloseModal} onSave={handleSaveOpening} />
       </Modal>
-      <JobOpenings hrId={sessionStorage.getItem("hrId")}/>
+      <JobOpenings hrId={sessionStorage.getItem("hrId")} change={change} setChange={setChange}/>
     </Box>
   );
 };

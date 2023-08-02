@@ -5,7 +5,7 @@ import JobOpeningsList from './JobOpeningsList';
 
 import axios from 'axios';
 
-const JobOpenings = ({hrId}) => {
+const JobOpenings = ({hrId, change, setChange}) => {
   const [view, setView] = useState('grid'); // 'grid' or 'list'
   const [openingData, setOpeningData] = useState(null);
 
@@ -26,7 +26,7 @@ const JobOpenings = ({hrId}) => {
             setOpeningData(response.data);
           })
       }
-  }, []);
+  }, [change]);
 
 const handleToggleView = (event, newView) => {
   setView(newView);
@@ -46,8 +46,8 @@ const handleDeleteSuccess = (deletedJobId) => {
           <ToggleButton value="grid">Grid View</ToggleButton>
           <ToggleButton value="list">List View</ToggleButton>
         </ToggleButtonGroup>
-        {view === 'grid' ? <JobOpeningsGrid jobData={openingData} handleDeleteSuccess={handleDeleteSuccess} /> 
-                          : <JobOpeningsList jobData={openingData} handleDeleteSuccess={handleDeleteSuccess}/>}
+        {view === 'grid' ? <JobOpeningsGrid jobData={openingData} handleDeleteSuccess={handleDeleteSuccess} setChange={setChange}/> 
+                          : <JobOpeningsList jobData={openingData} handleDeleteSuccess={handleDeleteSuccess} setChange={setChange}/>}
       </Stack>
       ) : (
         <h4>No Job Openings to show...</h4>

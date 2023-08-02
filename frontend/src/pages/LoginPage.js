@@ -50,19 +50,19 @@ export default function LoginPage({setChange}) {
               })
               .then(response => {
                   // Handle the response here
-                  console.log(response.data);
                   sessionStorage.setItem("hrId", response.data);
+                  console.log(sessionStorage.getItem("hrId"));
                   setChange(true);
                   setChange(false);
-                  //window.location.href = `http://localhost:3000/jobs`
-              })
-              .catch(error => {
+                })
+                .catch(error => {
                   // Handle errors here
                   console.error(error);
-              });
-    }).catch((error) => {
-        console.log(error);
-    })
+                });
+              }).catch((error) => {
+                console.log(error);
+              })
+              //window.location.href = `http://localhost:3000/jobs`
   };
 
   return (

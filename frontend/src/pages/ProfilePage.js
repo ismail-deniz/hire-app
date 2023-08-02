@@ -30,27 +30,27 @@ const ProfilePage = () => {
     // Fetch the profile data for the specified user using the urlId
     const fetchUserData = async () => {
       try {
-        if (urlId) {
+        if (urlId !== null && urlId !== "null") {
           axios.get(`http://localhost:8080/api/profile/${urlId}`)
           .then((response) => {
             setUserData(response.data);
             setUserDataFetched(true);
           })
         } else {
-          if (sessionStorage.getItem("userEmail")) {
-          axios.get(`http://localhost:8080/api/profile/mail/${encodeURIComponent(sessionStorage.getItem("uerEmail"))}`)
-          .then((response) => {
-            setUserData(response.data);
-            try {
-              if (userData.urlId)
-                setUserDataFetched(true);
-              else
-                setDataIncomplete(true);
-            } catch (error) {
-              setUserDataFetched(false);
-            }
-          })
-          } else {
+            if (sessionStorage.getItem("userEmail")) {
+            axios.get(`http://localhost:8080/api/profile/mail/${encodeURIComponent(sessionStorage.getItem("uerEmail"))}`)
+            .then((response) => {
+              setUserData(response.data);
+              try {
+                if (userData.urlId)
+                  setUserDataFetched(true);
+                else
+                  setDataIncomplete(true);
+              } catch (error) {
+                setUserDataFetched(false);
+              }
+            })
+            } else {
             window.location.href = "http://localhost:3000/login"
           }
         }

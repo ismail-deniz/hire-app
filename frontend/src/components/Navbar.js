@@ -17,9 +17,11 @@ const Navbar = ({change}) => {
         <Typography variant="h6" component={Link} to="/" style={{ textDecoration: 'none', color: 'white', flexGrow: 1, }}>
           OBSS Hire App
         </Typography>
+        {role === "APPLICANT" && 
         <Button component={Link} to={`/profile/${sessionStorage.getItem("urlId")}`} color="inherit" style={{ textDecoration: 'none' }}>
           Profile
         </Button>
+        }
         <Button component={Link} to="/jobs" color="inherit" style={{ textDecoration: 'none' }}>
           Jobs
         </Button>
@@ -28,9 +30,19 @@ const Navbar = ({change}) => {
         My Openings
         </Button>
         }
-        <Button component={Link} to="/contact" color="inherit" style={{ textDecoration: 'none' }}>
-          Contact
+        {role === null && 
+        <Button component={Link} to="/login" color="inherit" style={{ textDecoration: 'none' }}>
+          Login
         </Button>
+        }
+        {role !== null &&
+        <Button component={Link} to="/login" color="inherit" style={{ textDecoration: 'none' }} onClick={() => {
+          sessionStorage.clear();
+          setRole(null);
+        }}>
+          Logout
+        </Button>
+        }
       </Toolbar>
     </AppBar>
   );

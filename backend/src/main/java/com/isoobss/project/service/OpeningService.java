@@ -15,6 +15,7 @@ import com.isoobss.project.dto.OpeningDTO;
 import com.isoobss.project.model.Opening;
 import com.isoobss.project.repository.OpeningRepository;
 import com.isoobss.project.request.CreateOpeningRequest;
+import com.isoobss.project.request.EditOpeningRequest;
 import com.mongodb.DBObject;
 
 @Service
@@ -63,6 +64,17 @@ public class OpeningService {
         openingRepository.deleteById(new ObjectId(openingId));
     }
 
+    public OpeningDTO editOpening(EditOpeningRequest req) {
+        Opening opening = openingRepository.findById(new ObjectId(req.getId())).get();
+        opening.setTitle(req.getTitle());
+        opening.setExplanation(req.getExplanation());
+        opening.setQualifications(req.getQualifications());
+        opening.setActive(req.isActive());
+        opening.setActivationDate(req.isActive() ? new Date() : req.getActiveDate());
+        opening.setDeactivationDate(req.isActive() ? req.getDeactiveDate() : new Date());
+        return convertToDto(openingRepository.save(opening));
+    }
+
     public OpeningDTO convertToDto(Opening opening) {
         OpeningDTO dto = new OpeningDTO();
         dto.setId(opening.getId().toString());
@@ -84,4 +96,5 @@ public class OpeningService {
 
         return dto;
     }
+
 }

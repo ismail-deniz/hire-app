@@ -1,5 +1,7 @@
 package com.isoobss.project.repository;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -11,6 +13,5 @@ public interface ApplicantRepository extends MongoRepository<Applicant, ObjectId
 
     Applicant findByEmail(String email);
 
-    Applicant findByUrlId(String urlId);
-    
+    Applicant findByUrlId(String urlId);    
 }

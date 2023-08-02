@@ -9,17 +9,18 @@ import {
   Switch,
 } from '@mui/material';
 
-const CreateOpening = ({ onClose, onSave }) => {
-  const [title, setTitle] = useState('');
-  const [explanation, setExplanation] = useState('');
-  const [isActive, setIsActive] = useState(false);
+const CreateOpening = ({ onClose, onSave, job }) => {
+  const [title, setTitle] = useState(job ? job.title :'');
+  const [explanation, setExplanation] = useState(job ? job.explanation :'');
+  const [isActive, setIsActive] = useState(job? job.active : false);
   const [activeDate, setActiveDate] = useState('');
   const [deactiveDate, setDeactiveDate] = useState('');
-  const [qualifications, setQualifications] = useState([{ value: '' }]);
+  const [qualifications, setQualifications] = useState(job ? job.qualifications.map((value) => ({value})) : [{ value: '' }]);
 
   const handleSave = () => {
     // Create the opening object with the input values
     const newOpening = {
+      id: job ? job.id : null,
       title: title,
       explanation: explanation,
       active: isActive,

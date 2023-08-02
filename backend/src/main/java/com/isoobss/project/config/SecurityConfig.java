@@ -43,7 +43,6 @@ public class SecurityConfig {
                 .anyRequest().anonymous()
             );
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        System.out.println("helo");
         return http.build();
     }
 
