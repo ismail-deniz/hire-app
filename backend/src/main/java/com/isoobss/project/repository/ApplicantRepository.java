@@ -13,5 +13,7 @@ public interface ApplicantRepository extends MongoRepository<Applicant, ObjectId
 
     Applicant findByEmail(String email);
 
-    Applicant findByUrlId(String urlId);    
+    Applicant findByUrlId(String urlId);
+
+    List<Applicant> findAllByAppliedOpeningIdsContains(Object objectId);    
 }

@@ -16,6 +16,7 @@ import JobOpeningCard from './JobOpeningCard';
 import ApplyButton from './ApplyButton';
 import DeleteButton from './DeleteButton';
 import EditButton from './EditButton';
+import SeeApplicantsButton from './SeeApplicantsButton';
 
 const JobOpeningsList = ({jobData, handleDeleteSuccess, setChange}) => {
     const [selectedJob,
@@ -67,7 +68,8 @@ const JobOpeningsList = ({jobData, handleDeleteSuccess, setChange}) => {
                     <CardActions>
                         <ApplyButton job={job}/>
                         <DeleteButton job={job} handleDeleteSuccess={handleDeleteSuccess}/>
-                        <EditButton> job={job} setChangehange={setChange}</EditButton>
+                        <EditButton job={job} setChangehange={setChange} />
+                        <SeeApplicantsButton job={job}/>
                     </CardActions>
                 </Card>
             ))}

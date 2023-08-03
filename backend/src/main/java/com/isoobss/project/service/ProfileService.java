@@ -3,23 +3,26 @@ package com.isoobss.project.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.isoobss.project.dto.ApplicantDTO;
 import com.isoobss.project.model.Applicant;
 import com.isoobss.project.repository.ApplicantRepository;
 
 @Service
 public class ProfileService {
     private final ApplicantRepository applicantRepository;
+    private final ApplicantService applicantService;
     
     @Autowired
-    public ProfileService(ApplicantRepository applicantRepository) {
+    public ProfileService(ApplicantRepository applicantRepository, ApplicantService applicantService) {
         this.applicantRepository = applicantRepository;
+        this.applicantService = applicantService;
     }
 
-    public Applicant getProfile(String mail) {
-        return applicantRepository.findByEmail(mail);
+    public ApplicantDTO getProfile(String mail) {
+        return applicantService.convertToDto(applicantRepository.findByEmail(mail));
     }
 
-    public Applicant getProfileByUrlId(String urlId) {
-        return applicantRepository.findByUrlId(urlId);
+    public ApplicantDTO getProfileByUrlId(String urlId) {
+        return applicantService.convertToDto(applicantRepository.findByUrlId(urlId));
     }
 }

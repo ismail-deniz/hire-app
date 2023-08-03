@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.isoobss.project.model.Applicant;
+import com.isoobss.project.dto.ApplicantDTO;
 import com.isoobss.project.service.ProfileService;
 
 @Controller
@@ -30,7 +30,7 @@ public class ProfileController {
     public ResponseEntity<?> getProfile(@PathVariable String encodedMail) {
         try {
             String mail = URLDecoder.decode(encodedMail, StandardCharsets.UTF_8.name());
-            Applicant applicant = profileService.getProfile(mail);
+            ApplicantDTO applicant = profileService.getProfile(mail);
             if (applicant != null) {
                 return ResponseEntity.ok(applicant);
             } else {
@@ -44,11 +44,13 @@ public class ProfileController {
 
     @GetMapping("/{userUrlId}")
     public ResponseEntity<?> getProfileByUrlId(@PathVariable String userUrlId) {
-        Applicant applicant = profileService.getProfileByUrlId(userUrlId);  
+        ApplicantDTO applicant = profileService.getProfileByUrlId(userUrlId);  
         if (applicant != null) {
             return ResponseEntity.ok(applicant);
         } else {
             return ResponseEntity.badRequest().body(userUrlId + ": User cannot be found!");
         }
     }
+
+    
 }

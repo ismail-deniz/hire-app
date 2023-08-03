@@ -12,8 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.isoobss.project.dto.OpeningDTO;
+import com.isoobss.project.enums.ApplicationStatus;
+import com.isoobss.project.model.Application;
 import com.isoobss.project.model.Opening;
+import com.isoobss.project.repository.ApplicationRepository;
 import com.isoobss.project.repository.OpeningRepository;
+import com.isoobss.project.request.ApplicationRequest;
 import com.isoobss.project.request.CreateOpeningRequest;
 import com.isoobss.project.request.EditOpeningRequest;
 import com.mongodb.DBObject;
@@ -21,10 +25,12 @@ import com.mongodb.DBObject;
 @Service
 public class OpeningService {
     private final OpeningRepository openingRepository;
+    private final ApplicationRepository applicationRepository;
 
     @Autowired
-    public OpeningService(OpeningRepository openingRepository) {
+    public OpeningService(OpeningRepository openingRepository, ApplicationRepository applicationRepository) {
         this.openingRepository = openingRepository;
+        this.applicationRepository = applicationRepository;
     }
 
     public OpeningDTO createOpening(CreateOpeningRequest req) {
@@ -96,5 +102,4 @@ public class OpeningService {
 
         return dto;
     }
-
 }

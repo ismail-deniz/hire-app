@@ -1,7 +1,7 @@
 package com.isoobss.project.enums;
 
 public enum ApplicationStatus {
-    NOT_SEEN,
+    PENDING,
     IN_PROCESS,
     ACCEPTED,
     DENIED,

@@ -54,6 +54,7 @@ export default function LoginPage({setChange}) {
                   console.log(sessionStorage.getItem("hrId"));
                   setChange(true);
                   setChange(false);
+                  window.location.href = `http://localhost:3000/jobs`
                 })
                 .catch(error => {
                   // Handle errors here
@@ -62,7 +63,6 @@ export default function LoginPage({setChange}) {
               }).catch((error) => {
                 console.log(error);
               })
-              //window.location.href = `http://localhost:3000/jobs`
   };
 
   return (

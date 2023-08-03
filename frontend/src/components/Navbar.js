@@ -30,6 +30,11 @@ const Navbar = ({change}) => {
         My Openings
         </Button>
         }
+        {role === "APPLICANT" &&
+        <Button component={Link} to="/myapplications" color="inherit" style={{ textDecoration: 'none' }}>
+        My Applications
+        </Button>
+        }
         {role === null && 
         <Button component={Link} to="/login" color="inherit" style={{ textDecoration: 'none' }}>
           Login

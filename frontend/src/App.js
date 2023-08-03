@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import MyOpeningsPage from './pages/MyOpeningsPage';
 import { useState } from 'react';
 import SearchComponent from './components/SearchComponent';
+import MyApplicationsPage from './pages/MyApplicationsPage';
 
 function App() {
   const [change, setChange] = useState(false);
@@ -23,6 +24,7 @@ function App() {
               <Route path="/profile/:urlId" element={<ProfilePage setChange={setChange} />} />
               <Route path="/jobs" element={<JobOpeningsPage />} />
               <Route path="/myOpenings" element={<MyOpeningsPage />} />
+              <Route path="/myApplications" element={<MyApplicationsPage />} /> 
               <Route path="/" element={<SearchComponent />} />
             </Routes>
           </Stack>

@@ -46,6 +46,7 @@ const LinkedinConnection = () => {
         sessionStorage.setItem("userEmail", response.data.email);
         axios.get(`http://localhost:8080/api/profile/mail/${encodeURIComponent(response.data.email)}`)
         .then((profileResponse) => {
+          sessionStorage.setItem("applicantId", profileResponse.data.id);
           sessionStorage.setItem("urlId", profileResponse.data.urlId);
           sessionStorage.setItem("role", "APPLICANT");
           window.location.href = `/profile/${response.data.urlId}`;

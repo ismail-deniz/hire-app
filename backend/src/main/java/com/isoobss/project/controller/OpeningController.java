@@ -2,6 +2,7 @@ package com.isoobss.project.controller;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.isoobss.project.dto.OpeningDTO;
+import com.isoobss.project.model.Application;
 import com.isoobss.project.model.Opening;
+import com.isoobss.project.request.ApplicationRequest;
 import com.isoobss.project.request.CreateOpeningRequest;
 import com.isoobss.project.service.OpeningService;
 

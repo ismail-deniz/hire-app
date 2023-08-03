@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, 
     Stack, 
     TextField, 
@@ -9,17 +9,46 @@ import { Button,
     Typography    
 } from '@mui/material';
 import axios from 'axios';
-import debounce from 'lodash.debounce';
 
-const SearchComponent = () => {
+const SearchComponent = ({openingId}) => {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  
+  const [allApplicants, setAllApplicants] = useState([]);
+  const [showResults, setShowResults] = useState(searchResults ? searchResults : allApplicants);
+
+  useEffect(() => {
+    setShowResults(searchResults.length !== 0 || searchText.length !== 0 ? searchResults : allApplicants);
+    }, [searchResults, allApplicants]);
+
+  useEffect(() => {
+    // get all applicants from backend
+    if (openingId) {
+        axios.get(`http://localhost:8080/api/applicants?openingId=${openingId}`)
+        .then((response) => {
+            setAllApplicants(response.data);
+        })
+    } else {
+        axios.get(`http://localhost:8080/api/applicants/all`)
+            .then((response) => {
+                setAllApplicants(response.data);
+            })
+        }
+    }, []);
+
+  const getSearchPath = (text) => {
+    if (openingId) {
+        return `http://localhost:8080/api/search?text=${text}&openingId=${openingId}`;
+    } else {
+        return `http://localhost:8080/api/search/all?text=${text}`;
+    }
+  }
+
   const handleSearchChange = (text) => {
+        console.log(allApplicants);
       // Send the search request to the backend
       if (text !== '' && text.length >= 3) {
           axios
-          .get(`http://localhost:8080/api/search?text=${text}`)
+          .get(getSearchPath(text))
           .then((response) => {
               setSearchResults(response.data);
               console.log(searchResults);
@@ -55,8 +84,11 @@ const SearchComponent = () => {
         fullWidth
         variant="outlined"
       />
+      {searchResults.length === 0 && searchText.length !== 0 && (
+        <Typography variant="subtitle1">No results found</Typography>
+      )}
       <Stack spacing={2}>
-        {searchResults.map((applicant) => (
+        {showResults.map((applicant) => (
             <Card
                 key={applicant.urlId}
                 sx={{
