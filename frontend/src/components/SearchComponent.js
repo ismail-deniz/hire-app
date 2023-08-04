@@ -11,6 +11,7 @@ import { Button,
 import axios from 'axios';
 
 const SearchComponent = ({openingId}) => {
+
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [allApplicants, setAllApplicants] = useState([]);
@@ -75,6 +76,74 @@ const SearchComponent = ({openingId}) => {
     window.location.href = `http://localhost:3000/profile/${urlId}`;
     };
 
+  const handleProcess = (applicantId) => {
+    // Implement the logic to handle the click action based on the applicantId
+    console.log(`Clicked Process ID: ${applicantId}`);
+    axios.put(`http://localhost:8080/api/hr/process/${openingId}/${applicantId}`, null, {
+        headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`
+        }
+    })
+        .then((response) => {
+            console.log(response);
+        }
+    );
+};
+
+    const handleAccept = (applicantId) => {
+        // Implement the logic to handle the click action based on the applicantId
+        console.log(`Clicked Accept ID: ${applicantId}`);
+        axios.put(`http://localhost:8080/api/hr/accept/${openingId}/${applicantId}`, null, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+            }
+        })
+            .then((response) => {
+                console.log(response);
+            }
+        );
+    };
+
+    const handleDecline = (applicantId) => {
+        // Implement the logic to handle the click action based on the applicantId
+        console.log(`Clicked Decline ID: ${applicantId}`);
+        axios.put(`http://localhost:8080/api/hr/decline/${openingId}/${applicantId}`, null, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+            }
+        })
+            .then((response) => {
+                console.log(response);
+            }
+        );
+    };
+
+    const handleBlacklist = (applicantId) => {
+        // Implement the logic to handle the click action based on the applicantId
+        console.log(`Clicked Blacklist ID: ${applicantId}`);
+        axios.put(`http://localhost:8080/api/hr/blacklist/${applicantId}`, null, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+            }
+        })
+            .then((response) => {
+                console.log(response);
+            }
+        );
+    };
+
+    const handleSeeCoverLetter = (applicantId) => {
+        // Implement the logic to handle the click action based on the applicantId
+        console.log(`Clicked See Cover Letter ID: ${applicantId}`);
+        axios.get(`http://localhost:8080/api/application/${openingId}/${applicantId}`)
+            .then((response) => {
+                console.log(response);
+            }
+        );
+    };
+
+
+
   return (
     <div>
       <TextField
@@ -117,14 +186,20 @@ const SearchComponent = ({openingId}) => {
                     </Stack>
                 </CardActionArea>
                 <CardActions>
-                    <Button size="small" color="primary" onClick={() => console.log(applicant.id)}>
+                    <Button size="small" color="primary" onClick={() => handleSeeCoverLetter(applicant.id)}>
+                        See Cover Letter
+                    </Button>
+                    <Button size="small" color="primary" onClick={() => handleProcess(applicant.id)}>
                         Process
                     </Button>
-                    <Button size="small" color="primary" onClick={() => console.log(applicant.id)}>
+                    <Button size="small" color="primary" onClick={() => handleAccept(applicant.id)}>
                         Accept
                     </Button>
-                    <Button size="small" color="primary" onClick={() => console.log(applicant.id)}>
+                    <Button size="small" color="primary" onClick={() => handleDecline(applicant.id)}>
                         Decline
+                    </Button>
+                    <Button size="small" color="primary" onClick={() => handleBlacklist(applicant.id)}>
+                        Blacklist
                     </Button>
                 </CardActions>
             </Card>

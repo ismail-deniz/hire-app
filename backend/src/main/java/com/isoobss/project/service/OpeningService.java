@@ -52,6 +52,13 @@ public class OpeningService {
         List<Opening> openings = openingRepository.findAll();
         List<OpeningDTO> openingObjects = new ArrayList<OpeningDTO>();
         for (Opening opening : openings) {
+            if (opening.isActive() && opening.getDeactivationDate().before(new Date())) {
+                opening.setActive(false);
+                openingRepository.save(opening);
+            } else if (!opening.isActive() && opening.getActivationDate().before(new Date())) {
+                opening.setActive(true);
+                openingRepository.save(opening);
+            }
             openingObjects.add(convertToDto(opening));
         }
         return openingObjects;
@@ -61,6 +68,13 @@ public class OpeningService {
         List<Opening> openings = openingRepository.findByHrId(new ObjectId(hrId));
         List<OpeningDTO> openingObjects = new ArrayList<OpeningDTO>();
         for (Opening opening : openings) {
+            if (opening.isActive() && opening.getDeactivationDate().before(new Date())) {
+                opening.setActive(false);
+                openingRepository.save(opening);
+            } else if (!opening.isActive() && opening.getActivationDate().before(new Date())) {
+                opening.setActive(true);
+                openingRepository.save(opening);
+            }
             openingObjects.add(convertToDto(opening));
         }
         return openingObjects;

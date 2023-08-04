@@ -88,6 +88,13 @@ public class ApplicantService {
         return applicants.stream().map(applicant -> convertToDto(applicant)).toList();
     }
 
+    public ApplicantDTO blacklistApplicant(String applicantId) {
+        Applicant applicant = applicantRepository.findById(new ObjectId(applicantId)).get();
+        if (applicant == null) return null;
+        applicant.setBlacklisted(true);
+        return convertToDto(applicantRepository.save(applicant));
+    }
+
     public ApplicantDTO convertToDto(Applicant applicant) {
         if (applicant == null) return null;
         ApplicantDTO applicantDTO = new ApplicantDTO();

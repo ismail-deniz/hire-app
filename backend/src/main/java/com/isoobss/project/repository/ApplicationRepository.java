@@ -13,5 +13,7 @@ import com.isoobss.project.model.Application;
 public interface ApplicationRepository extends MongoRepository<Application, ObjectId> {
 
     List<Application> findByApplicantId(ObjectId objectId);
+
+    Application findByOpeningIdAndApplicantId(ObjectId objectId, ObjectId objectId2);
     
 }

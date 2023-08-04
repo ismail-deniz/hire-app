@@ -30,6 +30,11 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.getAllApplicationsByApplicantId(applicantId));
     }
 
+    @GetMapping("/{openingId}/{applicantId}")
+    public ResponseEntity<?> getApplications(@PathVariable String openingId, @PathVariable String applicantId) {
+        return ResponseEntity.ok(applicationService.getApplication(openingId, applicantId));
+    }
+
     @PostMapping
     public ResponseEntity<?> applyToOpening(@RequestBody ApplicationRequest req) {
         Application application = applicationService.applyToOpening(req);
