@@ -46,4 +46,10 @@ public class LinkedinController {
             return ResponseEntity.badRequest().body("Failed to update profile: " + e.getMessage());
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody String email) {
+        linkedinService.logout(email);
+        return ResponseEntity.ok("Logged out successfully");
+    }
 }

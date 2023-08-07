@@ -33,32 +33,47 @@ const JobOpeningsGrid = ({jobData, handleDeleteSuccess, setChange}) => {
         setSelectedJob(null);
     };
 
+    const getBackgroundColor = (job) => {
+        if (job.active) { // light green
+            return '#c8e6c9';
+        } else { // light red
+            return '#ffcdd2';
+        }
+    };
+
     return (
         <Grid container spacing={2}>
             {jobData.map((job) => (
                 <Grid item key={job.id} xs={12} sm={6} md={4} lg={3}>
                     <Card>
-                        <CardActionArea onClick={() => onClick(job.id)}>
-                            <CardContent>
-                                <img
-                                    src={`logo/company.png`}
-                                    alt="Company Logo"
-                                    style={{
-                                    width: '100%',
-                                    marginBottom: '1rem'
-                                }}/>
-                                <Typography variant="h6">{job.title}</Typography>
-                                <Typography variant="subtitle1">{job.active 
-                                        ? 'Active'
-                                        : 'Inactive'}</Typography>
-                            </CardContent>
-                        </CardActionArea>
-                        <CardActions>
-                            <ApplyButton job={job} />
-                            <DeleteButton job={job} handleDeleteSuccess={handleDeleteSuccess} />
-                            <EditButton job={job} setChange={setChange} />
-                            <SeeApplicantsButton job={job}/>
-                        </CardActions>
+                    <CardActionArea sx={{backgroundColor : getBackgroundColor(job)}}  onClick={() => onClick(job.id)}>
+                        <CardContent>
+                        <img
+                            src={`logo/company.png`}
+                            alt="Company Logo"
+                            style={{
+                            width: '100%',
+                            marginBottom: '1rem',
+                            }}
+                        />
+                        <Typography variant="h6">{job.title}</Typography>
+                        {job.active ? (
+                            <Typography variant="subtitle1">
+                            Active until: {job.deactivationDate ? (new Date(job.deactivationDate)).toLocaleDateString() : "N/A"}
+                            </Typography>
+                        ) : (
+                            <Typography variant="subtitle1">
+                            Inactive until: {job.activationDate ? (new Date(job.activationDate)).toLocaleDate.String() : "N/A"}
+                            </Typography>
+                        )}
+                        </CardContent>
+                    </CardActionArea>
+                    <CardActions>
+                        <ApplyButton job={job} />
+                        <DeleteButton job={job} handleDeleteSuccess={handleDeleteSuccess} />
+                        <EditButton job={job} setChange={setChange} />
+                        <SeeApplicantsButton job={job} />
+                    </CardActions>
                     </Card>
                 </Grid>
             ))}

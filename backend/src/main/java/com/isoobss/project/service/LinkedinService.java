@@ -1,9 +1,12 @@
 package com.isoobss.project.service;
 
+import java.util.HashMap;
+
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.data.mongodb.core.aggregation.VariableOperators.Map;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -32,6 +35,8 @@ public class LinkedinService {
 
     private final ApplicantRepository applicantRepository;
 
+    private static HashMap<String, String> accessTokenMap = new HashMap<>();
+
     @Autowired
     public LinkedinService(RestTemplateBuilder restTemplateBuilder, ApplicantRepository applicantRepository) {
         this.restTemplateBuilder = restTemplateBuilder;
@@ -45,6 +50,18 @@ public class LinkedinService {
         // Fetch LinkedIn profile using the access token
         return fetchLinkedinProfileData(accessToken);
     }
+
+    public void logout(String email) {
+        String destroyTokenUrl = "https://api.linkedin.com/uas/oauth/invalidateToken";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessTokenMap.get("email"));
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        
+        ResponseEntity<Object> responseEntity = restTemplateBuilder.build().exchange(
+            destroyTokenUrl, HttpMethod.GET, requestEntity, Object.class);
+    }
+
 
     private String exchangeAuthorizationCodeForAccessToken(String authorizationCode) throws LinkedinException {
         String tokenUrl = "https://www.linkedin.com/oauth/v2/accessToken";
@@ -94,6 +111,8 @@ public class LinkedinService {
         Applicant applicant = new Applicant();
         applicant.setFullName(lp.getFirstName() + " " + lp.getLastName());
         applicant.setEmail(emailResponse.getElements()[0].getHandle().getEmailAddress());
+
+        accessTokenMap.put(applicant.getEmail(), accessToken);
         
         Applicant exists = applicantRepository.findByEmail(applicant.getEmail());
         if (exists != null) {

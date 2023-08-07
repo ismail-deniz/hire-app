@@ -15,5 +15,7 @@ public interface ApplicationRepository extends MongoRepository<Application, Obje
     List<Application> findByApplicantId(ObjectId objectId);
 
     Application findByOpeningIdAndApplicantId(ObjectId objectId, ObjectId objectId2);
+
+    void deleteByOpeningId(ObjectId objectId);
     
 }

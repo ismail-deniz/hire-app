@@ -12,6 +12,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import axios from 'axios'
 import LinkedinConnection from '../components/LinkedinConnection';
+import { useState } from 'react';
 
 function Copyright(props) {
   return (
@@ -31,6 +32,8 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function LoginPage({setChange}) {
+    const [error, setError] = useState(false);
+
     const handleSubmit = (event) => {
     event.preventDefault();  
     const data = new FormData(event.currentTarget);
@@ -62,6 +65,7 @@ export default function LoginPage({setChange}) {
                 });
               }).catch((error) => {
                 console.log(error);
+                setError(true);
               })
   };
 
@@ -100,25 +104,24 @@ export default function LoginPage({setChange}) {
               Sign in
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            {error && <Typography variant="subtitle1" color="error">Invalid username or password</Typography>}
               <TextField
                 margin="normal"
                 required
-                fullWidth
                 id="username"
                 label="Username"
                 name="username"
-                autoComplete="username"
                 autoFocus
+                error={error}
               />
               <TextField
                 margin="normal"
                 required
-                fullWidth
                 name="password"
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="current-password"
+                error={error}
               />
               <Button
                 type="submit"

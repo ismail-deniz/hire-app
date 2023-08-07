@@ -15,16 +15,19 @@ import com.isoobss.project.dto.ApplicantDTO;
 import com.isoobss.project.model.Applicant;
 import com.isoobss.project.model.Application;
 import com.isoobss.project.repository.ApplicantRepository;
+import com.isoobss.project.repository.ApplicationRepository;
 
 @Service
 public class ApplicantService {
     private final ApplicantRepository applicantRepository;
+    private final ApplicationRepository applicationRepository;
     private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public ApplicantService(ApplicantRepository applicantRepository, MongoTemplate mongoTemplate) {
+    public ApplicantService(ApplicantRepository applicantRepository, MongoTemplate mongoTemplate, ApplicationRepository applicationRepository) {
         this.applicantRepository = applicantRepository;
         this.mongoTemplate = mongoTemplate;
+        this.applicationRepository = applicationRepository;
     }
 
     public List<ApplicantDTO> getAllApplicants() {
@@ -36,7 +39,7 @@ public class ApplicantService {
     public List<ApplicantDTO> getAllApplicantsOfOpening(ObjectId openingId) {
         List<Applicant> applicants = applicantRepository.findAllByAppliedOpeningIdsContains(openingId);
         if (applicants == null) return null;
-        return applicants.stream().map(applicant -> convertToDto(applicant)).toList();
+        return applicants.stream().map(applicant -> convertToOpeningSearchResult(applicant, openingId)).toList();
     }
 
     public List<ApplicantDTO> searchAllApplicantsBy(String text) {
@@ -85,13 +88,13 @@ public class ApplicantService {
             }
         }
 
-        return applicants.stream().map(applicant -> convertToDto(applicant)).toList();
+        return applicants.stream().map(applicant -> convertToOpeningSearchResult(applicant, openingId)).toList();
     }
 
     public ApplicantDTO blacklistApplicant(String applicantId) {
         Applicant applicant = applicantRepository.findById(new ObjectId(applicantId)).get();
         if (applicant == null) return null;
-        applicant.setBlacklisted(true);
+        applicant.setBlacklisted(applicant.isBlacklisted() ? false : true);
         return convertToDto(applicantRepository.save(applicant));
     }
 
@@ -110,6 +113,26 @@ public class ApplicantService {
         applicantDTO.setExperienceList(applicant.getExperienceList());
         applicantDTO.setEducationList(applicant.getEducationList());
         applicantDTO.setCertificateList(applicant.getCertificateList());
+        return applicantDTO;
+    }
+
+    public ApplicantDTO convertToOpeningSearchResult(Applicant applicant, ObjectId openingId) {
+        if (applicant == null) return null;
+        Application application = applicationRepository.findByOpeningIdAndApplicantId(openingId, applicant.getId());
+
+        ApplicantDTO applicantDTO = new ApplicantDTO();
+        applicantDTO.setId(applicant.getId().toString());
+        applicantDTO.setEmail(applicant.getEmail());
+        applicantDTO.setFullName(applicant.getFullName());
+        applicantDTO.setLinkedinUrl(applicant.getLinkedinUrl());
+        applicantDTO.setUrlId(applicant.getUrlId());
+        applicantDTO.setAbout(applicant.getAbout());
+        if (applicant.getAppliedOpeningIds() != null)
+            applicantDTO.setAppliedOpeningIds(applicant.getAppliedOpeningIds().stream().map(id -> id.toString()).toList());
+        applicantDTO.setBlacklisted(applicant.isBlacklisted());
+
+        applicantDTO.setStatus(application.getStatus());
+        applicantDTO.setCoverLetter(application.getCoverLetter());
         return applicantDTO;
     }
 }

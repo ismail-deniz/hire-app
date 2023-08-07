@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Stack, Box, Container } from '@mui/material';
 import './style/styles.css';
 import ProfilePage from './pages/ProfilePage';
@@ -25,7 +25,8 @@ function App() {
               <Route path="/jobs" element={<JobOpeningsPage />} />
               <Route path="/myOpenings" element={<MyOpeningsPage />} />
               <Route path="/myApplications" element={<MyApplicationsPage />} /> 
-              <Route path="/" element={<SearchComponent />} />
+              <Route path="/search" element={<SearchComponent />} />
+              <Route path="/" element={<Navigate to="/search" />}/>
             </Routes>
           </Stack>
         </Container>

@@ -8,7 +8,7 @@ const JobOpeningCard = ({ selectedJob }) => {
       <Typography variant="h4" gutterBottom>
         {selectedJob.title}
       </Typography>
-      <Typography variant="h6" gutterBottom>
+      <Typography style={{ whiteSpace: 'pre-line' }}>
         {selectedJob.explanation}
       </Typography>
       {selectedJob.qualifications && selectedJob.qualifications.length > 0 && (

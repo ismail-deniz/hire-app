@@ -13,24 +13,26 @@ import org.springframework.stereotype.Service;
 
 import com.isoobss.project.dto.OpeningDTO;
 import com.isoobss.project.enums.ApplicationStatus;
+import com.isoobss.project.model.Applicant;
 import com.isoobss.project.model.Application;
 import com.isoobss.project.model.Opening;
+import com.isoobss.project.repository.ApplicantRepository;
 import com.isoobss.project.repository.ApplicationRepository;
 import com.isoobss.project.repository.OpeningRepository;
-import com.isoobss.project.request.ApplicationRequest;
 import com.isoobss.project.request.CreateOpeningRequest;
 import com.isoobss.project.request.EditOpeningRequest;
-import com.mongodb.DBObject;
 
 @Service
 public class OpeningService {
     private final OpeningRepository openingRepository;
     private final ApplicationRepository applicationRepository;
+    private final ApplicantRepository applicantRepository;
 
     @Autowired
-    public OpeningService(OpeningRepository openingRepository, ApplicationRepository applicationRepository) {
+    public OpeningService(OpeningRepository openingRepository, ApplicationRepository applicationRepository, ApplicantRepository applicantRepository) {
         this.openingRepository = openingRepository;
         this.applicationRepository = applicationRepository;
+        this.applicantRepository = applicantRepository;
     }
 
     public OpeningDTO createOpening(CreateOpeningRequest req) {
@@ -52,10 +54,10 @@ public class OpeningService {
         List<Opening> openings = openingRepository.findAll();
         List<OpeningDTO> openingObjects = new ArrayList<OpeningDTO>();
         for (Opening opening : openings) {
-            if (opening.isActive() && opening.getDeactivationDate().before(new Date())) {
+            if (opening.isActive() && opening.getDeactivationDate() != null && opening.getDeactivationDate().before(new Date())) {
                 opening.setActive(false);
                 openingRepository.save(opening);
-            } else if (!opening.isActive() && opening.getActivationDate().before(new Date())) {
+            } else if (!opening.isActive() && opening.getActivationDate() != null&& opening.getActivationDate().before(new Date())) {
                 opening.setActive(true);
                 openingRepository.save(opening);
             }
@@ -68,10 +70,10 @@ public class OpeningService {
         List<Opening> openings = openingRepository.findByHrId(new ObjectId(hrId));
         List<OpeningDTO> openingObjects = new ArrayList<OpeningDTO>();
         for (Opening opening : openings) {
-            if (opening.isActive() && opening.getDeactivationDate().before(new Date())) {
+            if (opening.isActive() && opening.getDeactivationDate() != null && opening.getDeactivationDate().before(new Date())) {
                 opening.setActive(false);
                 openingRepository.save(opening);
-            } else if (!opening.isActive() && opening.getActivationDate().before(new Date())) {
+            } else if (!opening.isActive() && opening.getActivationDate() != null && opening.getActivationDate().before(new Date())) {
                 opening.setActive(true);
                 openingRepository.save(opening);
             }
@@ -82,6 +84,12 @@ public class OpeningService {
 
     public void deleteOpening(String openingId) {
         openingRepository.deleteById(new ObjectId(openingId));
+        applicationRepository.deleteByOpeningId(new ObjectId(openingId));
+        List<Applicant> applicants = applicantRepository.findAllByAppliedOpeningIdsContains(new ObjectId(openingId));
+        for (Applicant applicant : applicants) {
+            applicant.getAppliedOpeningIds().remove(new ObjectId(openingId));
+            applicantRepository.save(applicant);
+        }
     }
 
     public OpeningDTO editOpening(EditOpeningRequest req) {

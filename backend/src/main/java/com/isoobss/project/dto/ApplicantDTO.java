@@ -2,8 +2,7 @@ package com.isoobss.project.dto;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
+import com.isoobss.project.enums.ApplicationStatus;
 import com.isoobss.project.model.Certificaiton;
 import com.isoobss.project.model.Education;
 import com.isoobss.project.model.Experience;
@@ -27,4 +26,7 @@ public class ApplicantDTO {
     private List<Experience> experienceList;
     private List<Education> educationList;
     private List<Certificaiton> certificateList;
+
+    private ApplicationStatus status;
+    private String coverLetter;
 }

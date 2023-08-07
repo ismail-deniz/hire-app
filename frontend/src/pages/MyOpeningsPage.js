@@ -37,10 +37,6 @@ const MyOpeningsPage = () => {
 
   return (
     <Box sx={{ p: 2 }}>
-      <Button onClick={handleOpenModal} variant="contained" color="primary">
-        Create Job Opening
-      </Button>
-
       <Modal
         open={isModalOpen}
         onClose={handleCloseModal}
@@ -48,8 +44,16 @@ const MyOpeningsPage = () => {
         <CreateOpening onClose={handleCloseModal} onSave={handleSaveOpening} />
       </Modal>
       <JobOpenings hrId={sessionStorage.getItem("hrId")} change={change} setChange={setChange}/>
+  
+      <Box sx={{ position: 'fixed', top: '91px', left: '16px' }}>
+        <Button onClick={handleOpenModal} variant="contained" color="primary" size='large'>
+          Create Job Opening
+        </Button>
+      </Box>
     </Box>
   );
-};
+  
+  };
+
 
 export default MyOpeningsPage;

@@ -6,22 +6,28 @@ import { Button,
     CardActionArea, 
     CardContent,
     CardActions,
-    Typography    
+    Typography,
+    Modal,
+    Box    
 } from '@mui/material';
 import axios from 'axios';
 
-const SearchComponent = ({openingId}) => {
+const SearchComponent = ({openingId, qualifications}) => {
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState(qualifications ? qualifications.join(' ') : '');
   const [searchResults, setSearchResults] = useState([]);
   const [allApplicants, setAllApplicants] = useState([]);
   const [showResults, setShowResults] = useState(searchResults ? searchResults : allApplicants);
+  const [openCoverLetterModal, setOpenCoverLetterModal] = useState(false);
+  const [change, setChange] = useState(0);
+  const [selectedApplicant, setSelectedApplicant] = useState(null);
 
   useEffect(() => {
     setShowResults(searchResults.length !== 0 || searchText.length !== 0 ? searchResults : allApplicants);
     }, [searchResults, allApplicants]);
 
   useEffect(() => {
+    handleSearchChange(searchText);
     // get all applicants from backend
     if (openingId) {
         axios.get(`http://localhost:8080/api/applicants?openingId=${openingId}`)
@@ -34,7 +40,7 @@ const SearchComponent = ({openingId}) => {
                 setAllApplicants(response.data);
             })
         }
-    }, []);
+    }, [change]);
 
   const getSearchPath = (text) => {
     if (openingId) {
@@ -43,6 +49,20 @@ const SearchComponent = ({openingId}) => {
         return `http://localhost:8080/api/search/all?text=${text}`;
     }
   }
+
+  const getBackgroundColor = (applicant) => {
+    if (applicant.blacklisted) {
+        return '#a0a0a0';
+    } else if (applicant.status === 'ACCEPTED') {
+        return '#c8e6c9';
+    } else if (applicant.status === 'DENIED') {
+        return '#ffcdd2';
+    } else if (applicant.status === 'IN_PROCESS') {
+        return '#bbdefb';
+    } else {
+        return '#fff';
+    }
+    };
 
   const handleSearchChange = (text) => {
         console.log(allApplicants);
@@ -76,58 +96,66 @@ const SearchComponent = ({openingId}) => {
     window.location.href = `http://localhost:3000/profile/${urlId}`;
     };
 
-  const handleProcess = (applicantId) => {
+  const handleProcess = (applicant) => {
     // Implement the logic to handle the click action based on the applicantId
-    console.log(`Clicked Process ID: ${applicantId}`);
-    axios.put(`http://localhost:8080/api/hr/process/${openingId}/${applicantId}`, null, {
+    console.log(`Clicked Process ID: ${applicant.id}`);
+    axios.put(`http://localhost:8080/api/hr/process/${openingId}/${applicant.id}`, null, {
         headers: {
             Authorization: `Bearer ${sessionStorage.getItem("token")}`
         }
     })
         .then((response) => {
             console.log(response);
+            setChange(Math.random());
+            applicant.status = 'IN_PROCESS';
         }
     );
 };
 
-    const handleAccept = (applicantId) => {
+    const handleAccept = (applicant) => {
         // Implement the logic to handle the click action based on the applicantId
-        console.log(`Clicked Accept ID: ${applicantId}`);
-        axios.put(`http://localhost:8080/api/hr/accept/${openingId}/${applicantId}`, null, {
+        console.log(`Clicked Accept ID: ${applicant.id}`);
+        axios.put(`http://localhost:8080/api/hr/accept/${openingId}/${applicant.id}`, null, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`
             }
         })
             .then((response) => {
                 console.log(response);
+                setChange(Math.random());
+                applicant.status = 'ACCEPTED';
             }
         );
     };
 
-    const handleDecline = (applicantId) => {
+    const handleDecline = (applicant) => {
         // Implement the logic to handle the click action based on the applicantId
-        console.log(`Clicked Decline ID: ${applicantId}`);
-        axios.put(`http://localhost:8080/api/hr/decline/${openingId}/${applicantId}`, null, {
+        console.log(`Clicked Decline ID: ${applicant.id}`);
+        axios.put(`http://localhost:8080/api/hr/decline/${openingId}/${applicant.id}`, null, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`
             }
         })
             .then((response) => {
                 console.log(response);
+                setChange(Math.random());
+                applicant.status = 'DENIED';
             }
         );
     };
 
-    const handleBlacklist = (applicantId) => {
+    const handleBlacklist = (applicant) => {
         // Implement the logic to handle the click action based on the applicantId
-        console.log(`Clicked Blacklist ID: ${applicantId}`);
-        axios.put(`http://localhost:8080/api/hr/blacklist/${applicantId}`, null, {
+        console.log(`Clicked Blacklist ID: ${applicant.id}`);
+        axios.put(`http://localhost:8080/api/hr/blacklist/${applicant.id}`, null, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`
             }
         })
             .then((response) => {
                 console.log(response);
+                setChange(Math.random());
+                applicant.blacklisted = !applicant.blacklisted;
             }
         );
     };
@@ -135,11 +163,12 @@ const SearchComponent = ({openingId}) => {
     const handleSeeCoverLetter = (applicantId) => {
         // Implement the logic to handle the click action based on the applicantId
         console.log(`Clicked See Cover Letter ID: ${applicantId}`);
-        axios.get(`http://localhost:8080/api/application/${openingId}/${applicantId}`)
-            .then((response) => {
-                console.log(response);
-            }
-        );
+        setOpenCoverLetterModal(true);
+        setSelectedApplicant(applicantId);
+    };
+
+    const handleCloseModal = () => {
+        setOpenCoverLetterModal(false);
     };
 
 
@@ -165,8 +194,9 @@ const SearchComponent = ({openingId}) => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 paddingRight: '15px',
-                cursor: 'pointer'
-            }}>
+                cursor: 'pointer',
+                backgroundColor: getBackgroundColor(applicant)
+                }}>                 
                 <CardActionArea onClick={() => onClick(applicant.urlId)}>
                     <Stack direction="row">
                         <img
@@ -185,23 +215,51 @@ const SearchComponent = ({openingId}) => {
                         </CardContent>
                     </Stack>
                 </CardActionArea>
+                {openingId && (
+                    <>
                 <CardActions>
                     <Button size="small" color="primary" onClick={() => handleSeeCoverLetter(applicant.id)}>
                         See Cover Letter
                     </Button>
-                    <Button size="small" color="primary" onClick={() => handleProcess(applicant.id)}>
+                    <Button disabled={applicant.blacklisted} size="small" color="primary" onClick={() => handleProcess(applicant)}>
                         Process
                     </Button>
-                    <Button size="small" color="primary" onClick={() => handleAccept(applicant.id)}>
+                    <Button disabled={applicant.blacklisted} size="small" color="primary" onClick={() => handleAccept(applicant)}>
                         Accept
                     </Button>
-                    <Button size="small" color="primary" onClick={() => handleDecline(applicant.id)}>
+                    <Button disabled={applicant.blacklisted} size="small" color="primary" onClick={() => handleDecline(applicant)}>
                         Decline
                     </Button>
-                    <Button size="small" color="primary" onClick={() => handleBlacklist(applicant.id)}>
-                        Blacklist
+                    <Button size="small" color="primary" onClick={() => handleBlacklist(applicant)}>
+                        {applicant.blacklisted ? 'Unblacklist' : 'Blacklist'}
                     </Button>
                 </CardActions>
+                <Modal
+                    open={openCoverLetterModal && applicant.id === selectedApplicant}
+                    onClose={handleCloseModal}
+                >
+                    <Box  sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: '80%',
+                            maxHeight: '80%',
+                            overflowY: 'auto',
+                            bgcolor: 'background.paper',
+                            boxShadow: 24,
+                            p: 4,
+                        }}>
+                        <Typography variant="h5" gutterBottom>  
+                            Cover Letter of {applicant.fullName} :
+                        </Typography>
+                        <Typography variant="body2" gutterBottom style={{ whiteSpace: 'pre-line' }}>
+                            {applicant.coverLetter}
+                        </Typography>
+                    </Box>
+                </Modal>
+                    </>
+                )}
             </Card>
         ))}
     </Stack>

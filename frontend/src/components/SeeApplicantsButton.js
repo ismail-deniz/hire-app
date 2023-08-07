@@ -43,7 +43,7 @@ const SeeApplicantsButton = ({job}) => {
                         boxShadow: 24,
                         p: 4,
                     }}>
-                    <SearchComponent openingId={job.id}/>
+                    <SearchComponent openingId={job.id} qualifications={job.qualifications}/>
                 </Box>
             </Modal>
         </>

@@ -7,9 +7,11 @@ import axios from 'axios';
 
 
 const JobOpeningsPage = () => {
+  const [change, setChange] = useState(0);
+
   return (
     <Box sx={{ p: 2 }}>
-      <JobOpenings />
+      <JobOpenings change={change} setChange={setChange} />
     </Box>
   );
 };

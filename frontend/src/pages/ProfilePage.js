@@ -11,12 +11,13 @@ import {
   AccordionSummary,
   AccordionDetails,
   IconButton,
+  Link,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Edit as EditIcon } from '@mui/icons-material';
 import '../style/profilePageStyles.css';
 
 import axios from 'axios';
+import { set } from 'lodash';
 
 const ProfilePage = () => {
   const { urlId } = useParams(); // This will get the user's URL ID from the URL parameter
@@ -38,7 +39,7 @@ const ProfilePage = () => {
           })
         } else {
             if (sessionStorage.getItem("userEmail")) {
-            axios.get(`http://localhost:8080/api/profile/mail/${encodeURIComponent(sessionStorage.getItem("uerEmail"))}`)
+            axios.get(`http://localhost:8080/api/profile/mail/${encodeURIComponent(sessionStorage.getItem("userEmail"))}`)
             .then((response) => {
               setUserData(response.data);
               try {
@@ -48,6 +49,7 @@ const ProfilePage = () => {
                   setDataIncomplete(true);
               } catch (error) {
                 setUserDataFetched(false);
+                setDataIncomplete(true)
               }
             })
             } else {
@@ -96,9 +98,15 @@ const ProfilePage = () => {
     <div className="profile-container">
       {userDataFetched ? (
         <div>
+          { urlId === sessionStorage.getItem("urlId") ?
           <Typography variant="h4" className='profile-title' gutterBottom>
             Welcome, {userData.fullName}!
           </Typography>
+          : 
+          <Typography variant="h4" className='profile-title' gutterBottom>
+            {userData.fullName}
+          </Typography>
+          } 
 
           {/* About Section */}
             <Paper className="profile-card" elevation={3} style={{ padding: 15, marginBottom: 20 }}>
@@ -116,9 +124,6 @@ const ProfilePage = () => {
               <Typography variant="h5" className="profile-accordion-title">
                 Experience
               </Typography>
-              <IconButton color="primary">
-                <EditIcon />
-              </IconButton>
             </AccordionSummary>
             <AccordionDetails>
               <Grid container direction="column" spacing={2}>
@@ -141,9 +146,6 @@ const ProfilePage = () => {
               <Typography variant="h5" className="profile-accordion-title">
                 Education
               </Typography>
-              <IconButton color="primary">
-                <EditIcon />
-              </IconButton>
             </AccordionSummary>
             <AccordionDetails>
               <Grid container direction="column" spacing={2}>
@@ -165,9 +167,6 @@ const ProfilePage = () => {
               <Typography variant="h5" className="profile-accordion-title">
                 Certification
               </Typography>
-              <IconButton color="primary">
-                <EditIcon />
-              </IconButton>
             </AccordionSummary>
             <AccordionDetails>
               <Grid container direction="column" spacing={2}>
@@ -183,12 +182,14 @@ const ProfilePage = () => {
             </AccordionDetails>
           </Accordion>
           {/* LinkedIn URL and Fetch Profile Button */}
-            <Box display="flex" alignItems="center" justifyContent="space-between">
+          { urlId === sessionStorage.getItem("urlId") ?
+            <Box display="flex" alignItems="center">
                 <TextField
                 label="LinkedIn URL"
-                fullWidth
                 value={userData.linkedinUrl || ''}
-                disabled
+                fullWidth
+                variant="outlined"
+                onChange={(e) => {setUserData({...userData, linkedinUrl: e.target.value})}}
                 />
                 <Button
                 variant="contained"
@@ -198,13 +199,24 @@ const ProfilePage = () => {
                 Fetch Profile
                 </Button>
             </Box>
+            :
+            <Box display="flow" alignItems="center" justifyContent="space-between">
+                <Typography variant="h6">LinkedIn URL</Typography>
+                <Link
+                href={userData.linkedinUrl}
+                underline='hover'
+                >
+                  {userData.linkedinUrl}
+                </Link>
+            </Box>
+          }
         </div>
       ) : (
         // Display a loading or error message if userData is null
         <div>
           {dataIncomplete ? (
             <div>
-            <Typography variant="h5" gutterBottom>Welcome!</Typography>
+            <Typography variant="h5" gutterBottom>Welcome! {userData.fullName}</Typography>
               <Paper elevation={3} style={{ padding: 20, marginBottom: 20 }}>
                 <TextField
                   label="LinkedIn Profile URL"

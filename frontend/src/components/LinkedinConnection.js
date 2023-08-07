@@ -38,7 +38,7 @@ const LinkedinConnection = () => {
     window.location.href = authorizationUrl;
   };
 
-  const fetchProfileData = async (authorizationCode) => {
+  const fetchProfileData = (authorizationCode) => {
     try {
       axios.get(`http://localhost:8080/api/linkedin/profile?code=${authorizationCode}`)
       .then((response => {

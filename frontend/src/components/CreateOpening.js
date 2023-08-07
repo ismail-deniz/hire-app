@@ -13,8 +13,7 @@ const CreateOpening = ({ onClose, onSave, job }) => {
   const [title, setTitle] = useState(job ? job.title :'');
   const [explanation, setExplanation] = useState(job ? job.explanation :'');
   const [isActive, setIsActive] = useState(job? job.active : false);
-  const [activeDate, setActiveDate] = useState('');
-  const [deactiveDate, setDeactiveDate] = useState('');
+  const [dateValue, setDateValue] = useState('');
   const [qualifications, setQualifications] = useState(job ? job.qualifications.map((value) => ({value})) : [{ value: '' }]);
 
   const handleSave = () => {
@@ -24,12 +23,13 @@ const CreateOpening = ({ onClose, onSave, job }) => {
       title: title,
       explanation: explanation,
       active: isActive,
-      activeDate: isActive ? new Date(activeDate) : null,
-      deactiveDate: isActive ? null : new Date(deactiveDate),
+      activeDate: isActive ? null : new Date(dateValue),
+      deactiveDate: isActive ? new Date(dateValue) : null,
       qualifications: qualifications.map((qual) => qual.value),
       hrId: sessionStorage.getItem("hrId"),
     };
-
+    console.log(newOpening);
+    console.log(dateValue)
     // Call the onSave function and pass the new opening object
     onSave(newOpening);
   };
@@ -119,8 +119,8 @@ const CreateOpening = ({ onClose, onSave, job }) => {
             label={isActive ? 'Deactivation Date' : 'Activation Date'}
             type="date"
             fullWidth
-            value={isActive ? deactiveDate : activeDate}
-            onChange={(e) => (isActive ? setDeactiveDate(e.target.value) : setActiveDate(e.target.value))}
+            value={dateValue}
+            onChange={(e) => (setDateValue(e.target.value))}
             InputLabelProps={{
               shrink: true,
             }}

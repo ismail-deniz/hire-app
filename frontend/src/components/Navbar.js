@@ -25,6 +25,9 @@ const Navbar = ({change}) => {
         <Button component={Link} to="/jobs" color="inherit" style={{ textDecoration: 'none' }}>
           Jobs
         </Button>
+        <Button component={Link} to="/search" color="inherit" style={{ textDecoration: 'none' }}>
+          Search
+        </Button>
         {role === "HR" && 
         <Button component={Link} to="/myopenings" color="inherit" style={{ textDecoration: 'none' }}>
         My Openings

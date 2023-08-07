@@ -33,6 +33,15 @@ const JobOpeningsList = ({jobData, handleDeleteSuccess, setChange}) => {
         setSelectedJob(null);
     };
 
+    const getBackgroundColor = (job) => {
+        if (job.active) { // light green
+            return '#c8e6c9';
+        } else { // light red
+            return '#ffcdd2';
+        }
+    };
+
+
     return (
         <Stack spacing={2}>
             {jobData.map((job) => (
@@ -45,7 +54,10 @@ const JobOpeningsList = ({jobData, handleDeleteSuccess, setChange}) => {
                     paddingRight: '15px',
                     cursor: 'pointer'
                 }}>
-                    <CardActionArea onClick={() => onClick(job.id)}>
+                    <CardActionArea 
+                        sx={{backgroundColor : getBackgroundColor(job)}} 
+                            onClick={() => onClick(job.id)}
+                            >
                         <Stack direction="row">
                             <img
                                 src={`logo/company.png`}
@@ -59,9 +71,15 @@ const JobOpeningsList = ({jobData, handleDeleteSuccess, setChange}) => {
                                 <Typography variant="h6" gutterBottom>
                                     {job.title}
                                 </Typography>
-                                <Typography variant="subtitle1">{job.active
-                                        ? 'Active'
-                                        : 'Inactive'}</Typography>
+                                {job.active ? (
+                                    <Typography variant="subtitle1">
+                                    Active until: {job.deactivationDate ? (new Date(job.deactivationDate)).toLocaleDateString() : "N/A"}
+                                    </Typography>
+                                ) : (
+                                    <Typography variant="subtitle1">
+                                    Inactive until: {job.activationDate ? (new Date(job.activationDate)).toLocaleDate.String() : "N/A"}
+                                    </Typography>
+                                )}
                             </CardContent>
                         </Stack>
                     </CardActionArea>
