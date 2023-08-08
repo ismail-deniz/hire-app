@@ -51,14 +51,18 @@ const SearchComponent = ({openingId, qualifications}) => {
   }
 
   const getBackgroundColor = (applicant) => {
-    if (applicant.blacklisted) {
-        return '#a0a0a0';
-    } else if (applicant.status === 'ACCEPTED') {
-        return '#c8e6c9';
-    } else if (applicant.status === 'DENIED') {
-        return '#ffcdd2';
-    } else if (applicant.status === 'IN_PROCESS') {
-        return '#bbdefb';
+    if (openingId) {
+        if (applicant.blacklisted) {
+            return '#a0a0a0';
+        } else if (applicant.status === 'ACCEPTED') {
+            return '#c8e6c9';
+        } else if (applicant.status === 'DENIED') {
+            return '#ffcdd2';
+        } else if (applicant.status === 'IN_PROCESS') {
+            return '#bbdefb';
+        } else {
+            return '#fff';
+        }
     } else {
         return '#fff';
     }
