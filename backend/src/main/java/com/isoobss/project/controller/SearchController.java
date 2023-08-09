@@ -27,13 +27,23 @@ public class SearchController {
     
     @GetMapping("/all")
     public List<ApplicantDTO> search(@RequestParam String text) {
-        System.out.println("searching...");
-        return applicantService.searchAllApplicantsBy(text);
+        try {
+            System.out.println("searching...");
+            return applicantService.searchAllApplicantsBy(text);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @GetMapping
     public List<ApplicantDTO> search(@RequestParam String text, @RequestParam String openingId) {
-        System.out.println("searching...");
-        return applicantService.searchAllApplicantsOfOpeningBy(new ObjectId(openingId), text);
+        try {
+            System.out.println("searching...");
+            return applicantService.searchAllApplicantsOfOpeningBy(new ObjectId(openingId), text);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

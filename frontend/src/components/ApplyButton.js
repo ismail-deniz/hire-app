@@ -12,6 +12,7 @@ import {
 import {ApplicationStatus} from '../enum/ApplicationStatus.js';
 
 import axios from 'axios'; 
+import toast from 'react-simple-toasts';
 
 const ApplyButton = ({job}) => {
     const [isModalOpen,
@@ -50,8 +51,10 @@ const ApplyButton = ({job}) => {
             coverLetter: coverLetter
         }).then((response) => {
             console.log('Application sent:', response.data);
+            toast('Application sent!');
         }).catch((error) => {
             console.error('Error sending application:', error);
+            toast('Error sending application!', {theme: 'warning'});
         });
 
         handleModalClose();

@@ -45,6 +45,12 @@ public class ApplicationService {
     }
 
     public Application applyToOpening(ApplicationRequest req) {
+        // if opening is not active, return null
+        Opening opening = openingRepository.findById(new ObjectId(req.getOpeningId())).get();
+        if (opening == null || !opening.isActive()) {
+            return null;
+        }
+
         Application application = new Application();
         application.setApplicantId(new ObjectId(req.getApplicantId()));
         application.setOpeningId(new ObjectId(req.getOpeningId()));

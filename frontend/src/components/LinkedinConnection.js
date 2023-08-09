@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, TextField, Typography, Paper } from '@mui/material';
+import toast from 'react-simple-toasts';
 
 const CLIENT_ID = '77255ae457gw43';
 const REDIRECT_URI = 'http%3A%2F%2Flocalhost%3A3000%2Flogin';
@@ -15,6 +16,7 @@ const LinkedinConnection = () => {
     const authorizationCode = params.get('code');
   
     if (authorizationCode && !fetchedData) {
+      toast('Fetching profile data...', {theme: 'info', position: 'bottom-right'});
       fetchProfileData(encodeURIComponent(authorizationCode));
       setFetchedData(true);
       window.history.pushState({}, '', '/profile'); // Replace '/' with the URL you want to show after data is fetched
@@ -44,6 +46,7 @@ const LinkedinConnection = () => {
       .then((response => {
         setProfileData(response.data);
         sessionStorage.setItem("userEmail", response.data.email);
+        toast('Login in process...')
         axios.get(`http://localhost:8080/api/profile/mail/${encodeURIComponent(response.data.email)}`)
         .then((profileResponse) => {
           sessionStorage.setItem("applicantId", profileResponse.data.id);
@@ -53,6 +56,7 @@ const LinkedinConnection = () => {
         })
         .catch((error)=>{
           console.log(error);
+          toast('Error logging in!', {theme: 'warning'});
         })
       }))
 

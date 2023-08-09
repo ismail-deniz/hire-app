@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
 
 import CreateOpening from './CreateOpening';
+import toast from 'react-simple-toasts';
 
 
 const EditButton = ({job, setChange}) => {
@@ -19,6 +20,7 @@ const EditButton = ({job, setChange}) => {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`
                 }}).then((response) => {
+                    toast('Opening edited!');
                     console.log('Edited Opening:', response.data);
                     setChange(Math.random());
                 }

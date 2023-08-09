@@ -33,16 +33,31 @@ public class OpeningController {
 
     @PostMapping()
     public ResponseEntity<OpeningDTO> createOpening(@RequestBody CreateOpeningRequest req) {
-        return ResponseEntity.ok(openingService.createOpening(req));
+        try {
+            return ResponseEntity.ok(openingService.createOpening(req));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping()
     public ResponseEntity<List<OpeningDTO>> getAllOpenings() {
-        return ResponseEntity.ok(openingService.getAllOpenings());
+        try {
+            return ResponseEntity.ok(openingService.getAllOpenings());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/{hrId}")
     public ResponseEntity<List<OpeningDTO>> getOpeningsByHrId(@PathVariable String hrId) {
-        return ResponseEntity.ok(openingService.getOpeningsByHrId(hrId));
+        try {
+            return ResponseEntity.ok(openingService.getOpeningsByHrId(hrId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

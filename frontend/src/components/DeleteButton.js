@@ -3,6 +3,7 @@ import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import axios from 'axios';
+import toast from 'react-simple-toasts';
 
 const DeleteButton = ({job, handleDeleteSuccess}) => {
 
@@ -13,7 +14,7 @@ const DeleteButton = ({job, handleDeleteSuccess}) => {
             }
         })
         .then((response) => {
-
+            toast('Job deleted!');
             console.log(response.data);
             handleDeleteSuccess(jobId);
         })

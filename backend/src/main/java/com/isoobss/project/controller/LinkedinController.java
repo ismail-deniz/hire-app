@@ -33,6 +33,7 @@ public class LinkedinController {
             Applicant profile = linkedinService.getLinkedinProfile(authorizationCode);
             return ResponseEntity.ok(profile);
         } catch (LinkedinException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Failed to fetch Linkedin profile: " + e.getMessage());
         }
     }
@@ -43,6 +44,7 @@ public class LinkedinController {
             Applicant profile = scrapeService.scrapeProfile(req.getProfileUrl(), req.getEmail());
             return ResponseEntity.ok(profile);
         } catch (UserNotFoundException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Failed to update profile: " + e.getMessage());
         }
     }

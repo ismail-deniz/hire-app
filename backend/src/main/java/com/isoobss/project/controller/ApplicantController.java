@@ -24,11 +24,21 @@ public class ApplicantController {
     
     @GetMapping("/all")
     public ResponseEntity<?> getAllApplicants() {
-        return ResponseEntity.ok(applicantService.getAllApplicants());
+        try {
+            return ResponseEntity.ok(applicantService.getAllApplicants());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping
     public ResponseEntity<?> getAllApplicantsOfOpening(@RequestParam String openingId) {
-        return ResponseEntity.ok(applicantService.getAllApplicantsOfOpening(new ObjectId(openingId)));
+        try {
+            return ResponseEntity.ok(applicantService.getAllApplicantsOfOpening(new ObjectId(openingId)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

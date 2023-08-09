@@ -23,10 +23,16 @@ function App() {
               <Route path="/login" element={<LoginPage setChange={setChange}/>} />
               <Route path="/profile/:urlId" element={<ProfilePage setChange={setChange} />} />
               <Route path="/jobs" element={<JobOpeningsPage />} />
+              {sessionStorage.getItem("role") === "HR" && 
               <Route path="/myOpenings" element={<MyOpeningsPage />} />
+              }
+              {sessionStorage.getItem("role") === "APPLICANT" &&
               <Route path="/myApplications" element={<MyApplicationsPage />} /> 
+              }
               <Route path="/search" element={<SearchComponent />} />
               <Route path="/" element={<Navigate to="/search" />}/>
+              <Route path="*" element={<Navigate to="/search" />}/>
+
             </Routes>
           </Stack>
         </Container>

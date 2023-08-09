@@ -17,7 +17,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import '../style/profilePageStyles.css';
 
 import axios from 'axios';
-import { set } from 'lodash';
+import toast from 'react-simple-toasts';
 
 const ProfilePage = () => {
   const { urlId } = useParams(); // This will get the user's URL ID from the URL parameter
@@ -25,6 +25,7 @@ const ProfilePage = () => {
   const [userData, setUserData] = useState(null);
   const [userDataFetched, setUserDataFetched] = useState(false);
   const [dataIncomplete, setDataIncomplete] = useState(false);
+  const [noProfile, setNoProfile] = useState(false); 
   const [typedUrl, setTypedUrl] = useState('');
 
   useEffect(() => {
@@ -36,6 +37,11 @@ const ProfilePage = () => {
           .then((response) => {
             setUserData(response.data);
             setUserDataFetched(true);
+          }).catch((error) => {
+            console.log(error);
+            toast('Error fetching profile!', {theme: 'warning'});
+            setUserDataFetched(false);
+            setNoProfile(true);
           })
         } else {
             if (sessionStorage.getItem("userEmail")) {
@@ -81,6 +87,7 @@ const ProfilePage = () => {
 
   const handleSendRequest = async () => {
     console.log(sessionStorage.getItem("userEmail"));
+    toast('Sending request...', {theme: 'info', position: 'bottom-right'});
     try {
       const response = await axios.put(`http://localhost:8080/api/linkedin/profile`, {
         email: sessionStorage.getItem("userEmail"),
@@ -90,6 +97,7 @@ const ProfilePage = () => {
       sessionStorage.setItem("urlId", response.data.urlId);
       window.location.href = `/profile/${response.data.urlId}`;
     } catch (error) {
+      toast('Error sending request!', {theme: 'warning'});
       console.error('Error sending request:', error);
     }
   };
@@ -230,7 +238,10 @@ const ProfilePage = () => {
                 </Button>
               </Paper>
             </div>
-          ) : (
+          ) : {noProfile} ? (
+            <Typography variant="h5">No profile found!</Typography>
+          ) :
+          (
             <Typography variant="h5">Loading...</Typography>
           )}
         </div>

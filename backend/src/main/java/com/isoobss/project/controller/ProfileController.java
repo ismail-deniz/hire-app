@@ -36,7 +36,7 @@ public class ProfileController {
             } else {
                 return ResponseEntity.badRequest().body(mail + "email cannot be found!");
             }
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
@@ -44,11 +44,16 @@ public class ProfileController {
 
     @GetMapping("/{userUrlId}")
     public ResponseEntity<?> getProfileByUrlId(@PathVariable String userUrlId) {
-        ApplicantDTO applicant = profileService.getProfileByUrlId(userUrlId);  
-        if (applicant != null) {
-            return ResponseEntity.ok(applicant);
-        } else {
-            return ResponseEntity.badRequest().body(userUrlId + ": User cannot be found!");
+        try {
+            ApplicantDTO applicant = profileService.getProfileByUrlId(userUrlId);  
+            if (applicant != null) {
+                return ResponseEntity.ok(applicant);
+            } else {
+                return ResponseEntity.badRequest().body(userUrlId + ": User cannot be found!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
         }
     }
 

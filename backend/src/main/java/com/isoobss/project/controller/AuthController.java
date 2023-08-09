@@ -28,17 +28,23 @@ public class AuthController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> authenticate(@RequestBody LoginRequest req) {
-        System.out.println("OUTTTTTTTTTTTT");
-        String token = authService.authenticate(req.getUsername(), req.getPassword());
-        System.out.println("OUTTTTTTTTTTTT");
-        return ResponseEntity.ok(token);
+        try {
+            String token = authService.authenticate(req.getUsername(), req.getPassword());
+            return ResponseEntity.ok(token);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping
     public ResponseEntity<?> authenticateGet(@RequestParam String userName, @RequestParam String password){
-        System.out.println("OUTTTTTTTTTTTT");
-        String token = authService.authenticate(userName, password);
-        System.out.println("OUTTTTTTTTTTTT");
-        return ResponseEntity.ok(token);
+        try {
+            String token = authService.authenticate(userName, password);
+            return ResponseEntity.ok(token);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

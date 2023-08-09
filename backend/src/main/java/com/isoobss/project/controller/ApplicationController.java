@@ -27,21 +27,36 @@ public class ApplicationController {
 
     @GetMapping("/{applicantId}")
     public ResponseEntity<?> getAllApplicationsByApplicantId(@PathVariable String applicantId) {
-        return ResponseEntity.ok(applicationService.getAllApplicationsByApplicantId(applicantId));
+        try {
+            return ResponseEntity.ok(applicationService.getAllApplicationsByApplicantId(applicantId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/{openingId}/{applicantId}")
     public ResponseEntity<?> getApplications(@PathVariable String openingId, @PathVariable String applicantId) {
-        return ResponseEntity.ok(applicationService.getApplication(openingId, applicantId));
+        try {
+            return ResponseEntity.ok(applicationService.getApplication(openingId, applicantId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PostMapping
     public ResponseEntity<?> applyToOpening(@RequestBody ApplicationRequest req) {
-        Application application = applicationService.applyToOpening(req);
-        if (application != null) {
-            return ResponseEntity.ok(application);
-        } else {
-            return ResponseEntity.badRequest().body("Applicant or opening cannot be found!");
+        try{
+            Application application = applicationService.applyToOpening(req);
+            if (application != null) {
+                return ResponseEntity.ok(application);
+            } else {
+                return ResponseEntity.badRequest().body("Applicant or opening cannot be found!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

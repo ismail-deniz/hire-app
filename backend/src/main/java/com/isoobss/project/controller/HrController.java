@@ -51,6 +51,7 @@ public class HrController {
         try {
             return ResponseEntity.ok(hrService.getHrByUsername(username).toString());
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -61,6 +62,7 @@ public class HrController {
         try {
             return ResponseEntity.ok(openingService.createOpening(req));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -72,6 +74,7 @@ public class HrController {
             openingService.deleteOpening(openingId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -82,6 +85,7 @@ public class HrController {
         try {
             return ResponseEntity.ok(openingService.editOpening(req));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -92,6 +96,7 @@ public class HrController {
         try {
             return ResponseEntity.ok(applicationService.acceptApplicant(openingId, applicantId));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -102,6 +107,7 @@ public class HrController {
         try {
             return ResponseEntity.ok(applicationService.processApplicant(openingId, applicantId));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -112,6 +118,7 @@ public class HrController {
         try {
             return ResponseEntity.ok(applicationService.declineApplicant(openingId, applicantId));
         } catch (Exception e) {
+            e.printStackTrace();   
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -122,6 +129,7 @@ public class HrController {
         try {
             return ResponseEntity.ok(applicantService.blacklistApplicant(applicantId));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
